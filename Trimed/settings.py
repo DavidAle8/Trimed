@@ -9,6 +9,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'usuario.Usuario' # *************** PARA AUTENTICAÇÃO *********************
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,22 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',  # exige autenticação por padrão
-    # ],
-    'DEFAULT_PERMISSION_CLASSES': [
-    'rest_framework.permissions.AllowAny',
-    ],
-
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',  # para login via navegador/admin
-        'rest_framework.authentication.BasicAuthentication',    # opcional
-        'rest_framework.authentication.TokenAuthentication',    # para autenticação com token
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',  # opcional para documentação
-}
-
 
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
@@ -109,17 +94,28 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Email
 
-# if DEBUG:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# else:
-#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-DEFAULT_FROM_EMAIL = "O emael da Trimed"
+DEFAULT_FROM_EMAIL = "trimed.saude10"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST = config('EMAIL_HOST')
+
+
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny', 
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  
+        'rest_framework.authentication.SessionAuthentication',        
+        'rest_framework.authentication.BasicAuthentication',          
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema', 
+}
+
