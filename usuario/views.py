@@ -1,7 +1,7 @@
 
 from .models import Medico, Paciente, Enfermeiro, AdministradorSistema, RH, CadastroToken
 from .serializers import ( MedicoSerializer, PacienteSerializer, EnfermeiroSerializer, 
-CadastroTokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer)
+CadastroTokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer, LoginSerializer)
 from rest_framework import generics, status, mixins, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -15,6 +15,7 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .permissions import IsAdministradorSistema, IsRH
 
 
@@ -22,7 +23,8 @@ from .permissions import IsAdministradorSistema, IsRH
 """ ************************ Lógica para LOGIN e LOGOUT *********************** """
 
 class LoginView(TokenObtainPairView):
-    pass
+    serializer_class = LoginSerializer
+
 
 
 class LogoutView(APIView):
@@ -32,8 +34,8 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
+            token_auth = RefreshToken(refresh_token)
+            token_auth.blacklist()
             return Response( {"message": "Logout bem-sucedido."}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Token de refresh inválido ou não fornecido."},status=status.HTTP_400_BAD_REQUEST)
@@ -44,8 +46,8 @@ class LogoutView(APIView):
 
 """ ************************ Lógica para validação dos dados para mudança de senha *********************** """
 
-class MudarSenhaSerializerViewSet(APIView):
-    permission_classes = []
+class MudarSenhaViewSet(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = MudarSenhaSerializer(data=request.data)

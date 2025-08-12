@@ -10,7 +10,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 
-
+""" Classe para redefinir quais os ateributos serão usados para login (email e senha)
+    e criptografia de senha.
+"""
 class UsuarioManager(BaseUserManager):
 
     def _create_user(self, email, password=None, **extra_fields):
@@ -178,7 +180,7 @@ class RH(Usuario):
 
 
 class CadastroToken(models.Model):
-    
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     token = models.CharField(max_length=6, unique=True, editable=False)
     expira_em = models.DateTimeField(default=(timezone.now() + timedelta(minutes=15)))
 
@@ -191,3 +193,62 @@ class CadastroToken(models.Model):
 
     def __str__(self):
         return f"{self.token} - vaidade: {self.expira_em}"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+# então chat, entendi, n preciso validar email e nem senha. Porém, como vc sabe, temos uma regra de negócio que, dps que o RH cadastra um medico, enf. ou adm, ele não é um usuario válido ainda pra entrar no sistema, o procedimento é que ele muda sua senha antes (até pq eles estão sem senha) pra poder aí sim, finalizando isso, ser um usuario valido e fazer login. Veja que ja setei como default status_registro e coloquei is_active como false:
+
+# class MedicoViewSet(viewsets.ModelViewSet):
+    
+#     queryset = Medico.objects.all()
+#     serializer_class = MedicoSerializer
+
+#     def perform_create(self, serializer):
+#         # link_mudar_senha = f"https://meusite.com.br/mudar-senha?token={token}"
+#         medico = serializer.save(is_active=False)
+#         # EmailFactory.email_redefinicao_senha(medico, link_mudar_senha)}
+
+
+# e no models:
+
+
+# class Medico(Usuario):
+    
+#     crm = models.CharField(max_length=20, unique=True, verbose_name="CRM")
+#     especialidade = models.CharField(max_length=50, verbose_name="Especialidade")
+#     STATUS_REGISTRO_CHOICE = [
+#         ('PENDENTE', 'Pendente'),
+#         ('AUTORIZADO', 'Autorizar'),
+#         ('REJEITADO', 'Rejeitar'),
+#     ]
+    
+#     status_registro = models.CharField(max_length=10, choices=STATUS_REGISTRO_CHOICE, default='PENDENTE', verbose_name="Status de cadastramento")
+    
+#     class Meta:
+#         verbose_name = "Medico"
+#         verbose_name_plural = "Medicos"
+    
+#     def __str__(self):
+#         return f"{self.nome_completo} - CRM: {self.crm}"
+    
+
+
+# agr me mostre como eu faria pra n deixar este usuario logar com o status_registro PENDENTE e is_active fals:
+
+
+# class LoginSerializer(serializers.Serializer):
+
+#     def validate(self, data):     
+#     pass
+   

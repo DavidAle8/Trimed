@@ -5,12 +5,25 @@ from .models import Usuario, Medico, Paciente, Enfermeiro, AdministradorSistema,
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, check_password
 from notificacao.services import EmailFactory
+from django.db import transaction
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 User = get_user_model()
 
+""" LoginSerializer serve para validar se o email ou a senha estão digitadas corretamentes"""
+class LoginSerializer(TokenObtainPairSerializer):
 
-# class LoginSerializer():
-    # Colocar a lógica de, antes de darem os tokens pra eles, verificar se o status_registro é pendente e is_active é false.
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        usuario = self.user 
 
+        if getattr(usuario, "status_registro", None) == "PENDENTE" and usuario.is_active is False:
+            raise serializers.ValidationError("Usuário ainda não confirmou cadastro. Altere sua senha antes de acessar.")
+
+        return data
+
+
+""" Serve para mudar a senha. Antes valida se o token, senha e confirmar senha estão digitados corretamentes antes de salvar a senha"""
 class MudarSenhaSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
@@ -19,7 +32,8 @@ class MudarSenhaSerializer(serializers.Serializer):
     confirmar_senha = serializers.CharField(write_only=True, min_length=6)
 
     def validate(self, data):
-        
+
+        # talvez isso saia
         if data["senha"] != data["confirmar_senha"]:
             raise serializers.ValidationError({"confirmar_senha": "As senhas digitadas não coincidem."})
         
@@ -35,20 +49,30 @@ class MudarSenhaSerializer(serializers.Serializer):
         except CadastroToken.DoesNotExist:
             raise serializers.ValidationError({"token": "O token digitado não existe, verifique se foi digitado corretamente."})
         
+        if cadastro_token.usuario.email != data.get("email"):
+            raise serializers.ValidationError({"email": "Token não pertence a esse e-mail."})
+
         self.instance_token = cadastro_token
 
         return data
 
     def save(self):
-        usuario = self.instance_token.content_object
-        senha = self.validated_data["senha"]
         
-        usuario.set_password(senha)
-        usuario.is_active = True 
-        usuario.status_registro = "AUTORIZADO"
-        usuario.save()
+        cadastro_token = self.instance_token
+        usuario = cadastro_token.usuario
+        senha = self.validated_data["senha"]
 
-        self.instance_token.delete()
+        with transaction.atomic():
+            usuario.set_password(senha)
+
+            # só altera flags se o atributo existir e estiver no estado de "primeiro acesso"
+            if getattr(usuario, "status_registro", None) == "PENDENTE" and usuario.is_active is False:
+                usuario.is_active = True
+                usuario.status_registro = "AUTORIZADO"
+
+            usuario.save()
+            cadastro_token.delete()
+
         return usuario
 
 
@@ -59,24 +83,22 @@ class CadastroTokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CadastroToken
-        fields = ['token', 'expira_em', 'email']  # expõe o token se quiser, ou não
+        fields = ['token', 'email']
+        read_only_fields = ['expira_em']
 
     def create(self, validated_data):
         
-        email = validated_data['email']
+        email_front = validated_data['email']
 
         try:
-            usuario = Usuario.objects.get(email=email)
+            usuario = Usuario.objects.get(email=email_front)
         except Usuario.DoesNotExist:
             raise serializers.ValidationError("Email digitado incorreto ou não registrado.")
         
-        caracteres = (string.ascii_uppercase + string.ascii_lowercase + string.digits +string.punctuation)     
+        caracteres = (string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation)     
         token_str = ''.join(random.choices(caracteres, k=6))
 
-        token = CadastroToken.objects.create(
-            token=token_str,
-            expira_em=timezone.now() + timedelta(hours=24)
-        )
+        token = CadastroToken.objects.create(token=token_str, usuario=usuario)
 
         EmailFactory.email_token(usuario, token_str)
 

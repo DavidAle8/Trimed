@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import (MedicoViewSet, PacienteViewSet, EnfermeiroViewSet, RHViewSet, 
-AdministradorSistemaViewSet, MudarSenhaSerializerViewSet, CadastroTokenViewSet, LoginView, LogoutView)
+AdministradorSistemaViewSet, MudarSenhaViewSet, CadastroTokenViewSet, LoginView, LogoutView)
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
@@ -17,7 +17,7 @@ urlpatterns = router.urls
 
 
 urlpatterns += [
-    path('mudar-senha/', MudarSenhaSerializerViewSet.as_view()),
+    path('mudar-senha/', MudarSenhaViewSet.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
