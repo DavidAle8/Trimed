@@ -1,5 +1,5 @@
 from django.db import models
-from usuario.models import Paciente, Medico, Enfermeiro
+from usuario.models import Paciente, Medico, Enfermeiro, Usuario
 from django.contrib.auth.models import User, AbstractUser
 from django.core.validators import RegexValidator
 from django.contrib.auth.hashers import make_password
@@ -9,7 +9,9 @@ class Agendamento(models.Model):
     data_criacao_agendamento = models.DateTimeField(auto_now_add=True, verbose_name="Data da criação do agendamento")
     triagem_IA_pendente = models.BooleanField(default=True)
     data_hora_consulta = models.DateTimeField(verbose_name='Data e hora da consulta')
-    # colocar o medico responsavel pelo agendamento ou que vai fazer a consulta? talvez mais allgumas coisas
+    medico = models.ForeignKey(Medico, on_delete=models.PROTECT, verbose_name="Médico")    
+    paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT, verbose_name="Paciente")
+    
     STATUS_AGENDAMENTO_CHOICES = [
         ('PENDENTE', 'Pendente'),
         ('CONFIRMADO', 'Confirmado'),
@@ -17,12 +19,15 @@ class Agendamento(models.Model):
         ('CONCLUIDO', 'Concluído'),
         ('REAGENDADO', 'Reagendado'),
     ]
+
     status_agendamento = models.CharField(max_length=20, choices=STATUS_AGENDAMENTO_CHOICES, default='PENDENTE',verbose_name="Status do Agendamento")
 
     class Meta:
         verbose_name = "Agendamento"
         verbose_name_plural = "Agendamentos"
 
+    def __str__(self):
+        return f"Agendamento de {self.paciente.nome_completo} - com o médico {self.medico.nome_completo}"
 
 
 """ Agendamento fica em ficha pois pra cada agendamento, temos uma nova ficha relacionado a aquele agendamento"""
@@ -30,7 +35,6 @@ class FichaMedicaPaciente(models.Model):
     
     text_default = "Não informado"
     text_lenght = 255
-    paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT, verbose_name="Paciente")
     agendamento = models.OneToOneField(Agendamento, on_delete=models.CASCADE, verbose_name="Agendamento")
     
     motivo_consulta = models.TextField(max_length=text_lenght, verbose_name="Informe o motivo da consulta")
@@ -46,5 +50,6 @@ class FichaMedicaPaciente(models.Model):
         verbose_name_plural = "Fichas médicas dos pacientes"
         
     def __str__(self):
-        return f"Ficha médica de {self.paciente.nome_completo} - Agendamento #{self.agendamento.pk}"
+        paciente_nome = getattr(self.agendamento.paciente, 'nome_completo', 'Paciente desconhecido')
+        return f"Ficha médica de {paciente_nome} - Agendamento #{self.agendamento.pk}"
     
