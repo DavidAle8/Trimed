@@ -1,17 +1,12 @@
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
-from .models import FichaMedicaPaciente, Agendamento
+from .models import FichaMedicaPaciente
+# IMPORTANTE: Importamos a versão 'Display'
+from usuario.serializers import PacienteDisplaySerializer 
 
 class FichaMedicaPacienteSerializer(serializers.ModelSerializer):
+    # Usando o serializer de exibição
+    paciente = PacienteDisplaySerializer(read_only=True)
     
-    class Meta():
+    class Meta:
         model = FichaMedicaPaciente
         fields = '__all__'
-
-
-class AgendamentoSerializer(serializers.ModelSerializer):
-    
-    class Meta():
-        model = Agendamento
-        fields = '__all__'
-        

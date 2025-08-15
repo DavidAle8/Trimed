@@ -1,6 +1,6 @@
 from rest_framework import generics, status
-from .models import ConsultaMedica, ReceitaMedica, Medicamento, Exames 
-from .serializers import ConsultaMedicaSerializer, ReceitaMedicaSerializer, MedicamentoSerializer, ExamesSerializer
+from .models import ConsultaMedica, ReceitaMedica, Medicamento, Exames, ReceitaItem
+from .serializers import ConsultaMedicaSerializer, ReceitaMedicaSerializer, MedicamentoSerializer, ExamesSerializer, ReceitaItemSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -24,7 +24,9 @@ class ExamesViewSet(ModelViewSet):
     serializer_class = ExamesSerializer    
     
     
-    
+class ReceitaItemViewSet(ModelViewSet):
+    queryset = ReceitaItem.objects.all()
+    serializer_class = ReceitaItemSerializer
     
     
     

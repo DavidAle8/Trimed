@@ -70,3 +70,29 @@ class AdministradorSistemaSerializer(UsuarioSerializer):
     class Meta(UsuarioSerializer.Meta):
         model = AdministradorSistema
         fields = '__all__'
+
+
+class PacienteDisplaySerializer(serializers.ModelSerializer):
+    """
+    Versão leve do serializer de Paciente, para exibir informações de forma segura.
+    """
+    class Meta:
+        model = Paciente
+        # Selecionamos APENAS os campos seguros e necessários para exibição.
+        fields = ['id', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'cns']
+
+class EnfermeiroDisplaySerializer(serializers.ModelSerializer):
+    """
+    Versão leve do serializer de Enfermeiro.
+    """
+    class Meta:
+        model = Enfermeiro
+        fields = ['id', 'nome_completo', 'coren']
+
+class MedicoDisplaySerializer(serializers.ModelSerializer):
+    """
+    Versão leve do serializer de Médico.
+    """
+    class Meta:
+        model = Medico
+        fields = ['id', 'nome_completo', 'crm', 'especialidade']
