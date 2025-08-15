@@ -18,12 +18,15 @@ class LoginSerializer(TokenObtainPairSerializer):
         usuario = self.user 
 
         if getattr(usuario, "status_registro", None) == "PENDENTE" and usuario.is_active is False:
-            raise serializers.ValidationError("Usuário ainda não confirmou cadastro. Altere sua senha antes de acessar.")
+            raise serializers.ValidationError("Estas credenciais fornecidas não faz parte de um usuario ativo no sistema")
 
         return data
 
 
-""" Serve para mudar a senha. Antes valida se o token, senha e confirmar senha estão digitados corretamentes antes de salvar a senha"""
+""" 
+    Serve para mudar a senha dado o token, senha e confirmar senha. 
+    Antes valida se o token, senha e confirmar senha estão digitados corretamente antes de salvar a senha
+"""
 class MudarSenhaSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
@@ -33,17 +36,16 @@ class MudarSenhaSerializer(serializers.Serializer):
 
     def validate(self, data):
 
-        # talvez isso saia
         if data["senha"] != data["confirmar_senha"]:
             raise serializers.ValidationError({"confirmar_senha": "As senhas digitadas não coincidem."})
         
-        token_value = data.get("token")
+        token_front = data.get("token")
         
-        if not token_value:
+        if not token_front:
             raise serializers.ValidationError({"token": "O token é obrigatório."})
 
         try:
-            cadastro_token = CadastroToken.objects.get(token=token_value)
+            cadastro_token = CadastroToken.objects.get(token=token_front)
             if cadastro_token.expirou():
                 raise serializers.ValidationError({"token": "Token digitado foi expirado, por favor gere outro token."})
         except CadastroToken.DoesNotExist:
@@ -159,7 +161,6 @@ class PacienteSerializer(UsuarioSerializer):
     class Meta(UsuarioSerializer.Meta):
         model = Paciente
         fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cns']
-
 
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)

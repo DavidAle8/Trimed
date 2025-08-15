@@ -11,6 +11,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'usuario.Usuario' # *************** PARA AUTENTICAÇÃO *********************
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -66,6 +67,15 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'TrimedBD',
+#         'USER': 'postgres',
+#         'PASSWORD': '',
+#         'HOST': 'localhost'
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -95,6 +105,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
+# Email config:
+
 DEFAULT_FROM_EMAIL = "trimed.saude10"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
@@ -102,6 +114,11 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST = config('EMAIL_HOST')
+
+
+# Token config:
+
+GEMINI_API_KEY = config('GEMINI_API_KEY')
 
 
 

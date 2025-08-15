@@ -46,3 +46,6 @@ INSTALAÇÕES:
 
 pip install python-decouple
 pip install psycopg2-binary
+pip install google-generativeai
+
+python.exe -m pip install --upgrade pip
