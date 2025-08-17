@@ -1,6 +1,6 @@
 from django.db import models
 from usuario.models import Medico, Enfermeiro, Paciente
-from agendamento.models import Agendamento, FichaMedicaPaciente
+from agendamento.models import FichaMedicaPaciente
 
 class TriagemEnfermeiro(models.Model):
     
@@ -27,13 +27,11 @@ class TriagemEnfermeiro(models.Model):
     
     
     
-class triagemIA(models.Model):
+class TriagemIA(models.Model):
     
     ficha_medica_paciente = models.OneToOneField(FichaMedicaPaciente, on_delete=models.CASCADE, verbose_name="Agendamento do paciente")
-    
-    data_hora_prevista_consulta = models.DateTimeField(verbose_name="Data e hora prevista da consulta")
+   
     diagnostico_IA = models.TextField(verbose_name="Diagnóstico da IA")
-        
     PRIORIDADE_IA_CHOICES = [
         ('EMERGENCIA - VERMELHO', 'EMERGÊNCIA (vermelho)'),
         ('MUITO_URGENTE - LARANJA', 'MUITO URGENTE (laranja)'),
@@ -41,6 +39,11 @@ class triagemIA(models.Model):
         ('POUCO_URGENTE - VERDE', 'POUCO URGENTE (verde)'),
         ('NAO_URGENTE - AZUL', 'NÃO URGENTE (azul)'),
     ]
-
     prioridade_IA = models.CharField(max_length=40, choices=PRIORIDADE_IA_CHOICES, blank=True, null=True,verbose_name="Prioridade Classificada pela IA")
+        
+    STATUS_AGENDAMENTO_CHOICES = [
+        ('PENDENTE', 'Pendente'),
+        ('CONFIRMADO', 'Confirmado'),
+    ]
+    status_agendamento = models.CharField(max_length=20, choices=STATUS_AGENDAMENTO_CHOICES, default='PENDENTE',verbose_name="Status do Agendamento")
 

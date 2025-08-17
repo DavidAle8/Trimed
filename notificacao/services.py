@@ -18,19 +18,22 @@ class EmailFactory:
     def email_token(usuario, token):
         assunto = "Token"
         mensagem = f"Token necessário para a mudança de senha: {token}"
+        Email.enviar_email(usuario, assunto, mensagem, usuario.email, tipo_email="Token")
+    
+    @staticmethod
+    def email_confirmacao_agendamento(usuario):
+        assunto = "Confirmação de Agendamento"
+        mensagem = f"Olá {usuario.nome_completo}, seu agendamento foi concluído com sucesso!"
+        Email.enviar_email(usuario, assunto, mensagem, usuario.email, tipo_email="agendamento")
+        
+        
+    @staticmethod
+    def email_primeiro_acesso(usuario, link_mudar_senha):
+        assunto = "Finalização de Cadastro"
+        mensagem = (
+            f"Olá {usuario.nome_completo},\n\n"
+            f"Seu cadastro inicial foi realizado. Para finalizá-lo, acesse o link abaixo para redefinir a senha:\n"
+            f"{link_mudar_senha}\n\n"
+            f"Atenciosamente,\nEquipe TRIMED"
+        )
         Email.enviar_email(usuario, assunto, mensagem, usuario.email, tipo_email="primeiro_acesso")
-        
-        
-        
-        
-        
-# @staticmethod
-# def email_primeiro_acesso(usuario, link_mudar_senha):
-#     assunto = "Finalização de Cadastro"
-#     mensagem = (
-#         f"Olá {usuario.nome_completo},\n\n"
-#         f"Seu cadastro inicial foi realizado. Para finalizá-lo, acesse o link abaixo para redefinir a senha:\n"
-#         f"{link_mudar_senha}\n\n"
-#         f"Atenciosamente,\nEquipe TRIMED"
-#     )
-#     Email.enviar_email(usuario, assunto, mensagem, usuario.email, tipo_email="primeiro_acesso")

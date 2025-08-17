@@ -73,7 +73,7 @@ class MedicoViewSet(ModelViewSet):
         medico = serializer.save(is_active=False)
         medico.set_unusable_password()
         medico.save()
-        # EmailFactory.email_redefinicao_senha(medico, link_mudar_senha)
+        # EmailFactory.email_primeiro_acesso(medico, link_mudar_senha)
         
     def get_permissions(self):
         if self.action == 'create':
@@ -108,7 +108,7 @@ class EnfermeiroViewSet(viewsets.ModelViewSet):
         Enfermeiro = serializer.save(is_active=False)
         Enfermeiro.set_unusable_password()
         Enfermeiro.save()
-        # EmailFactory.email_redefinicao_senha(Enfermeiro, link_mudar_senha)
+        # EmailFactory.email_primeiro_acesso(Enfermeiro, link_mudar_senha)
 
     def get_permissions(self):
         if self.action == 'create':
@@ -129,7 +129,7 @@ class AdministradorSistemaViewSet(viewsets.ModelViewSet):
         adm_sistema = serializer.save(is_active=False)
         adm_sistema.set_unusable_password()
         adm_sistema.save()
-        # EmailFactory.email_redefinicao_senha(adm_sistema, link_mudar_senha)
+        # EmailFactory.email_primeiro_acesso(adm_sistema, link_mudar_senha)
            
     def get_permissions(self):
         if self.action == 'create':

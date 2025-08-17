@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import TriagemEnfermeiro, triagemIA
+from .models import TriagemEnfermeiro, TriagemIA
 
 class TriagemEnfermeiroSerializer(serializers.ModelSerializer):
     
@@ -8,10 +8,11 @@ class TriagemEnfermeiroSerializer(serializers.ModelSerializer):
         model = TriagemEnfermeiro
         fields = '__all__'
         
-class triagemIASerializer(serializers.ModelSerializer):
+class TriagemIASerializer(serializers.ModelSerializer):
     
     class Meta():
-        model = triagemIA
-        fields = '__all__'
+        model = TriagemIA
+        fields = ['id','data_triagem','diagnostico_IA','prioridade_IA','ficha','paciente','agendamento']
+
         
         
