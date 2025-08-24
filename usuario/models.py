@@ -69,6 +69,14 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             message="Formato de número inválido! formato correto: (11) 91234-5678"
         )
     ], verbose_name="Telefone")
+    
+    
+    ATIVO_CHOICES = [
+        ('DESLIGADO', 'Desligar'),
+        ('AFASTADO', 'Afastar'),
+        ('ATIVO', 'Ativar'),
+    ]
+    status_ativo = models.CharField(max_length=50, choices=ATIVO_CHOICES, default='ATIVO', verbose_name="status do vínculo")
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -91,7 +99,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 class Paciente(Usuario):
     
     cns = models.CharField(max_length=15, unique=True, verbose_name='Carteira Nacional de Saúde (CNS)')
-
     class Meta:
         verbose_name = "Paciente"
         verbose_name_plural = "Pacientes"
@@ -151,9 +158,9 @@ class AdministradorSistema(Usuario):
     departamento = models.TextField(max_length=30, verbose_name="Departamento")
 
     STATUS_REGISTRO_CHOICE = [
-        ('PENDENTE', 'Pendente'),
-        ('AUTORIZADO', 'Autorizar'),
-        ('REJEITADO', 'Rejeitar'),
+        ('Pendente', 'Pendente'),
+        ('Autorizado', 'Autorizar'),
+        ('Rejeitado', 'Rejeitar'),
     ]
     
     status_registro = models.CharField(max_length=10, choices=STATUS_REGISTRO_CHOICE, default='PENDENTE', verbose_name="Status de cadastramento")
@@ -170,15 +177,31 @@ class AdministradorSistema(Usuario):
 
 
 class RH(Usuario):
-    cargo = models.CharField(max_length=50, verbose_name="Cargo do RH")
-    departamento = models.CharField(max_length=50, verbose_name="Departamento do RH")
-
+     
+    SETORES = [
+        ("recrutamento", "Recrutamento e Seleção"),
+        ("treinamento", "Treinamento e Desenvolvimento"),
+        ("beneficios", "Gestão de Benefícios"),
+        ("folha", "Folha de Pagamento"),
+    ]
+    setor_responsabilidade = models.CharField(max_length=100, choices=SETORES, verbose_name="setor de responsabilidade")
+    
+    CARGOS = [
+        ("assistente", "Assistente de RH"),
+        ("coordenador", "Coordenador de RH"),
+        ("gerente", "Gerente de RH"),
+        ("diretor", "Diretor de RH"),
+    ]
+    
+    cargo = models.CharField(max_length=50, choices=CARGOS, verbose_name="Cargo do RH")
+    
     def __str__(self):
         return f"{self.nome_completo} - RH: {self.cargo}"
     
 
 
-class CadastroToken(models.Model):
+class Token(models.Model):
+    
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     token = models.CharField(max_length=6, unique=True, editable=False)
     expira_em = models.DateTimeField(default=(timezone.now() + timedelta(minutes=15)))

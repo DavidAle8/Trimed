@@ -1,7 +1,7 @@
 from datetime import timedelta, timezone
 import random, string
 from rest_framework import serializers
-from .models import Usuario, Medico, Paciente, Enfermeiro, AdministradorSistema, RH, CadastroToken
+from .models import Usuario, Medico, Paciente, Enfermeiro, AdministradorSistema, RH, Token
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, check_password
 from notificacao.services import EmailFactory
@@ -45,10 +45,10 @@ class MudarSenhaSerializer(serializers.Serializer):
             raise serializers.ValidationError({"token": "O token é obrigatório."})
 
         try:
-            cadastro_token = CadastroToken.objects.get(token=token_front)
+            cadastro_token = Token.objects.get(token=token_front)
             if cadastro_token.expirou():
                 raise serializers.ValidationError({"token": "Token digitado foi expirado, por favor gere outro token."})
-        except CadastroToken.DoesNotExist:
+        except Token.DoesNotExist:
             raise serializers.ValidationError({"token": "O token digitado não existe, verifique se foi digitado corretamente."})
         
         if cadastro_token.usuario.email != data.get("email"):
@@ -79,12 +79,12 @@ class MudarSenhaSerializer(serializers.Serializer):
 
 
 
-class CadastroTokenSerializer(serializers.ModelSerializer):
+class TokenSerializer(serializers.ModelSerializer):
     
     email = serializers.EmailField(write_only=True)
 
     class Meta:
-        model = CadastroToken
+        model = Token
         fields = ['token', 'email']
         read_only_fields = ['expira_em']
 
@@ -100,7 +100,7 @@ class CadastroTokenSerializer(serializers.ModelSerializer):
         caracteres = (string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation)     
         token_str = ''.join(random.choices(caracteres, k=6))
 
-        token = CadastroToken.objects.create(token=token_str, usuario=usuario)
+        token = Token.objects.create(token=token_str, usuario=usuario)
 
         EmailFactory.email_token(usuario, token_str)
 

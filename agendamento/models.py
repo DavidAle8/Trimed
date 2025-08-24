@@ -19,8 +19,8 @@ class Agendamento(models.Model):
         verbose_name = "Agendamento"
         verbose_name_plural = "Agendamentos"
 
-    def __str__(self):
-        return f"Agendamento de {self.paciente.nome_completo} - Agendamento #{self.pk}"
+    # def __str__(self):
+    #     return f"Agendamento de {self.triagem_IA.} - Agendamento #{self.pk}"
     
     
     

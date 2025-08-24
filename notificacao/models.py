@@ -7,11 +7,10 @@ from django.core.mail import send_mail
 
 class Email(models.Model):
 
-    assunto = models.CharField(max_length=255)
+    assunto = models.CharField(max_length=100)
     mensagem = models.TextField()
     tipo_email = models.CharField(max_length=50)
     enviado_em = models.DateTimeField(auto_now_add=True)
-    
     
     def __str__(self):
         return f"E-mail de {self.assunto}"

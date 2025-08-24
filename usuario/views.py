@@ -1,7 +1,7 @@
 
-from .models import Medico, Paciente, Enfermeiro, AdministradorSistema, RH, CadastroToken
-from .serializers import ( MedicoSerializer, PacienteSerializer, EnfermeiroSerializer, 
-CadastroTokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer, LoginSerializer)
+from .models import Medico, Paciente, Enfermeiro, AdministradorSistema, RH, Token
+from .serializers import (MedicoSerializer, PacienteSerializer, EnfermeiroSerializer, 
+TokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer, LoginSerializer)
 from rest_framework import generics, status, mixins, viewsets
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -19,7 +19,6 @@ from .permissions import IsAdministradorSistema, IsRH
 
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
-
 
 
 class LogoutView(APIView):
@@ -41,7 +40,8 @@ class LogoutView(APIView):
 
 """ ************************ Lógica para validação dos dados para mudança de senha *********************** """
 
-class MudarSenhaViewSet(APIView):
+class MudarSenhaView(APIView):
+    
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -52,10 +52,10 @@ class MudarSenhaViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CadastroTokenViewSet(ModelViewSet):
+class TokenViewSet(ModelViewSet):
     
-    queryset = CadastroToken.objects.all()
-    serializer_class = CadastroTokenSerializer
+    queryset = Token.objects.all()
+    serializer_class = TokenSerializer
     http_method_names = ['post']
 
          
@@ -83,8 +83,6 @@ class MedicoViewSet(ModelViewSet):
         return [IsAuthenticated()]
 
 
-
-
 class PacienteViewSet(ModelViewSet):
     
     queryset = Paciente.objects.all()
@@ -94,8 +92,6 @@ class PacienteViewSet(ModelViewSet):
         if self.action == 'create':
             return [AllowAny()]
         return [IsAuthenticated()]
-
-
 
 
 class EnfermeiroViewSet(viewsets.ModelViewSet):
@@ -118,7 +114,6 @@ class EnfermeiroViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
 
 
-
 class AdministradorSistemaViewSet(viewsets.ModelViewSet):
     
     queryset = AdministradorSistema.objects.all()
@@ -135,7 +130,6 @@ class AdministradorSistemaViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return [IsRH()]
         return [IsAuthenticated()]
-
 
 
 class RHViewSet(viewsets.ModelViewSet):

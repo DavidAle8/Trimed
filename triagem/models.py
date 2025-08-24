@@ -1,12 +1,14 @@
 from django.db import models
 from usuario.models import Medico, Enfermeiro, Paciente
 from agendamento.models import FichaMedicaPaciente
+from agendamento.models import Agendamento
 
+""" Enfermeiro recebe uma ficha triada e agendada para averiguar e colocar seus dados de triagen."""
 class TriagemEnfermeiro(models.Model):
     
     TEXT_DEFAULT = "Procedimento não realizado"
-    
-    ficha_clinica = models.OneToOneField(FichaMedicaPaciente, on_delete=models.CASCADE, verbose_name="Ficha Médica do Paciente") 
+
+    agendamento = models.OneToOneField(Agendamento, on_delete=models.CASCADE, verbose_name="Agendamento do Paciente") 
     enfermeiro = models.ForeignKey(Enfermeiro, on_delete=models.SET_NULL, null=True, verbose_name="Enfermeiro Responsável")
     
     pressao_arterial = models.CharField(max_length=10, blank=True, default=TEXT_DEFAULT, verbose_name="Pressão Arterial (mmHg)")
@@ -21,12 +23,10 @@ class TriagemEnfermeiro(models.Model):
         verbose_name_plural = "Triagens do enfermeiros(as)"
         
     def __str__(self):
-        paciente_nome = self.ficha_clinica.paciente.nome_completo
-        #data_hora = self.data_hora_triagem.strftime('%d/%m/%Y %H:%M')
-        return f"Enfermeiro(a): {self.enfermeiro.nome_completo} - Triagem do paciente {paciente_nome}"
+        return f"Enfermeiro(a): {self.enfermeiro.nome_completo} - Data/hora da consulta: {self.agendamento.data_hora_consulta}"
     
     
-    
+""" Triagem IA recebe uma ficha para poder dar seu diagnóstico e a prioridade"""
 class TriagemIA(models.Model):
     
     ficha_medica_paciente = models.OneToOneField(FichaMedicaPaciente, on_delete=models.CASCADE, verbose_name="Agendamento do paciente")
