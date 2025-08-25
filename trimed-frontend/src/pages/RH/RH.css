@@ -1,0 +1,164 @@
+/* RH.css - Versão simplificada sem efeitos */
+
+/* Estilos para a mensagem de sucesso com credenciais */
+.credenciais-info {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.credencial-item {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.senha-gerada {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-left: 0.5rem;
+  border: 1px dashed #ffeaa7;
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .credenciais-info {
+    padding: 1rem;
+  }
+  
+  .credencial-item {
+    font-size: 0.9rem;
+  }
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+}
+
+.loading {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.rh-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5; /* Substitua por sua variável se necessário */
+}
+
+.rh-container {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+}
+
+.page-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.rh-form {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rh-form .form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.rh-form .form-group {
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.rh-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.rh-form input,
+.rh-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.success-message {
+  text-align: center;
+  background-color: white;
+  padding: 30px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.success-message h3 {
+  color: #0066cc;
+  margin: 15px 0 10px;
+}
+
+.btn-primary {
+  background-color: #0066cc;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Estilos para ícones no formulário */
+.rh-form .fa-icon {
+  margin-right: 5px;
+  color: #0066cc;
+}
+
+@media (max-width: 768px) {
+  .rh-form .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .rh-form {
+    padding: 15px;
+  }
+}
