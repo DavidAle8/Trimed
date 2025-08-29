@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
+    "@fortawesome/react-fontawesome": "^3.0.0",
+    "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
+    "react-input-mask": "^2.0.4",
+    "react-router-dom": "^6.30.1"
+  }
+}

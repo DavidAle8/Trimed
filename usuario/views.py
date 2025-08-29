@@ -1,5 +1,5 @@
 
-from .models import Medico, Paciente, Enfermeiro, AdministradorSistema, RH, Token
+from .models import Usuario, Medico, Paciente, Enfermeiro, AdministradorSistema, RH, Token
 from .serializers import (MedicoSerializer, PacienteSerializer, EnfermeiroSerializer, 
 TokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer, LoginSerializer)
 from rest_framework import generics, status, mixins, viewsets
@@ -52,11 +52,19 @@ class MudarSenhaView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+""" Cria o token e ja manda para o seu email """
 class TokenViewSet(ModelViewSet):
     
     queryset = Token.objects.all()
     serializer_class = TokenSerializer
     http_method_names = ['post']
+
+    def perform_create(self, serializer):
+        token = serializer.save()
+        usuario = token.usuario
+        EmailFactory.email_token(usuario, token.token)
+        
 
          
          

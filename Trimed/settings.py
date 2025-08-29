@@ -1,25 +1,40 @@
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
+# ----------------------
+# BASE
+# ----------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-v(6wf58(6admx78o812pp&bl2m%$_!f)xmg$u4czh2_)rlpl9a'
-
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'usuario.Usuario' # *************** PARA AUTENTICAÇÃO *********************
+# ----------------------
+# AUTENTICAÇÃO PERSONALIZADO
+# ----------------------
+AUTH_USER_MODEL = 'usuario.Usuario'
 
 
+# ----------------------
+# INSTALLED APPS
+# ----------------------
 INSTALLED_APPS = [
+    
+    # Apps padrões.
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Apps de funcionalidades.
     'rest_framework',
+    'corsheaders',
+    
+    # Apps do projeto.
     'usuario',
     'agendamento',
     'consulta',
@@ -30,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,7 +75,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Trimed.wsgi.application'
 
 
-
+# ----------------------
+# DATABASE
+# ----------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -79,21 +97,16 @@ DATABASES = {
 
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 
+# ----------------------
+# INTERNACIONALIZAÇÃO
+# ----------------------
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
@@ -104,6 +117,26 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# ----------------------
+# CORS
+# ----------------------
+CORS_ALLOW_ALL_ORIGINS = True  # Apenas para desenvolvimento
+# Melhor usar CORS_ALLOWED_ORIGINS = ["http://localhost:3000"] no frontend React
+
+
+
+# ----------------------
+# SIMPLE JWT
+# ----------------------
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
 
 # Email config:
 
@@ -119,7 +152,6 @@ EMAIL_HOST = config('EMAIL_HOST')
 # Token config:
 
 GEMINI_API_KEY = config('GEMINI_API_KEY')
-
 
 
 REST_FRAMEWORK = {

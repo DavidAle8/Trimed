@@ -133,7 +133,6 @@ class Medico(Usuario):
 class Enfermeiro(Usuario):
     
     coren = models.CharField(max_length=20, unique=True, verbose_name="Registro COREN")
-    setor_atuacao = models.CharField(max_length=50, verbose_name="Setor de atuação")
     STATUS_REGISTRO_CHOICE = [
         ('PENDENTE', 'Pendente'),
         ('AUTORIZADO', 'Autorizar'),
@@ -142,6 +141,21 @@ class Enfermeiro(Usuario):
     
     status_registro = models.CharField(max_length=10, choices=STATUS_REGISTRO_CHOICE, default='PENDENTE', verbose_name="Status de cadastramento")
 
+    # SETOR_ATUACAO_CHOICES = [
+    #     ('UTI', 'Unidade de Terapia Intensiva'),
+    #     ('EMERGENCIA', 'Emergência / Pronto-Socorro'),
+    #     ('CENTRO_CIRURGICO', 'Centro Cirúrgico'),
+    #     ('CLINICA_MEDICA', 'Clínica Médica'),
+    #     ('CLINICA_CIRURGICA', 'Clínica Cirúrgica'),
+    #     ('PEDIATRIA', 'Pediatria'),
+    #     ('OBSTETRICIA', 'Obstetrícia / Maternidade'),
+    #     ('AMBULATORIO', 'Ambulatório'),
+    #     ('SAUDE_FAMILIA', 'Saúde da Família / Atenção Básica'),
+    #     ('ONCOLOGIA', 'Oncologia'),
+    #     ('PSIQUIATRIA', 'Psiquiatria / Saúde Mental'),
+    # ]
+    setor_atuacao = models.CharField(max_length=50, verbose_name="Setor de atuação")
+    
     class Meta:
         verbose_name = "Enfermeiro"
         verbose_name_plural = "Enfermeiros"
@@ -154,8 +168,26 @@ class Enfermeiro(Usuario):
     
     
 class AdministradorSistema(Usuario):
-    cargo = models.TextField(max_length=3, verbose_name="Cargo administrativo")
-    departamento = models.TextField(max_length=30, verbose_name="Departamento")
+    
+    CARGOS = [
+        ("super_admin", "Super Administrador"),
+        ("seguranca", "Administrador de Segurança"),
+        ("rede", "Administrador de Rede"),
+        ("banco_dados", "Administrador de Banco de Dados"),
+        ("infra", "Administrador de Infraestrutura"),
+        ("aplicacao", "Administrador de Aplicações"),
+    ]
+    cargo = models.CharField(max_length=50, choices=CARGOS, verbose_name="Cargo administrativo")
+    
+    DEPARTAMENTOS = [
+        ("ti", "Tecnologia da Informação"),
+        ("infra", "Infraestrutura"),
+        ("suporte", "Suporte Técnico"),
+        ("seguranca", "Segurança da Informação"),
+        ("desenvolvimento", "Desenvolvimento de Sistemas"),
+        ("gestao", "Gestão e Governança de TI"),
+    ]
+    departamento = models.TextField(max_length=30, choices=DEPARTAMENTOS, verbose_name="Departamento")
 
     STATUS_REGISTRO_CHOICE = [
         ('Pendente', 'Pendente'),
@@ -184,7 +216,8 @@ class RH(Usuario):
         ("beneficios", "Gestão de Benefícios"),
         ("folha", "Folha de Pagamento"),
     ]
-    setor_responsabilidade = models.CharField(max_length=100, choices=SETORES, verbose_name="setor de responsabilidade")
+    
+    setor_responsabilidade = models.CharField(max_length=50, choices=SETORES, verbose_name="setor de responsabilidade")
     
     CARGOS = [
         ("assistente", "Assistente de RH"),
@@ -208,6 +241,8 @@ class Token(models.Model):
 
     def expirou(self):
         return timezone.now() > self.expira_em
+    
+
 
     class Meta:
         verbose_name = "Token"

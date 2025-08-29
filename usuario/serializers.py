@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from notificacao.services import EmailFactory
 from django.db import transaction
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .helpers import gerar_token
 
 User = get_user_model()
 
@@ -85,11 +86,10 @@ class TokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Token
-        fields = ['token', 'email']
-        read_only_fields = ['expira_em']
+        fields = ['token', 'email', 'usuario']
+        read_only_fields = ['expira_em', 'token', 'usuario'] 
 
     def create(self, validated_data):
-        
         email_front = validated_data['email']
 
         try:
@@ -97,12 +97,9 @@ class TokenSerializer(serializers.ModelSerializer):
         except Usuario.DoesNotExist:
             raise serializers.ValidationError("Email digitado incorreto ou não registrado.")
         
-        caracteres = (string.ascii_uppercase + string.ascii_lowercase + string.digits + string.punctuation)     
-        token_str = ''.join(random.choices(caracteres, k=6))
+        token_str = gerar_token()
 
         token = Token.objects.create(token=token_str, usuario=usuario)
-
-        EmailFactory.email_token(usuario, token_str)
 
         return token
 
@@ -137,8 +134,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         
         if 'senha' in validated_data:
-            instance.set_password(validated_data['senha'])  # <- Criptografa corretamente
-            validated_data.pop('senha')  # <- Evita salvar senha em texto puro
+            instance.set_password(validated_data['senha']) 
+            validated_data.pop('senha')  
         return super().update(instance, validated_data)
 
     
@@ -202,7 +199,8 @@ class RHSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = RH
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cargo', 'departamento']
+        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 
+        'telefone', 'senha', 'cargo', 'setor_responsabilidade']
 
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)

@@ -9,6 +9,7 @@ from notificacao.urls import router as router_notificacao
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    
     path('api/', include(router_usuarios.urls)),
     path('api/', include(router_agendamentos.urls)),
     path('api/', include(router_triagem.urls)),
