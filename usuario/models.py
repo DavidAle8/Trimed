@@ -63,12 +63,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     ]
     sexo = models.CharField(max_length=10, choices=SEXO_CHOICES, verbose_name="Sexo")
 
-    telefone = models.CharField(max_length=15, validators=[
-        RegexValidator(
-            regex=r'^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$',
-            message="Formato de número inválido! formato correto: (11) 91234-5678"
-        )
-    ], verbose_name="Telefone")
+    telefone = models.CharField(max_length=15, verbose_name="Telefone")
     
     
     ATIVO_CHOICES = [

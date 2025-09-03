@@ -140,7 +140,7 @@ SIMPLE_JWT = {
 
 # Email config:
 
-DEFAULT_FROM_EMAIL = "trimed.saude10"
+DEFAULT_FROM_EMAIL = "trimed.saude10@gmail.com"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

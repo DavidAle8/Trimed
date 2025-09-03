@@ -16,9 +16,7 @@ class Email(models.Model):
         return f"E-mail de {self.assunto}"
     
     @staticmethod
-    def enviar_email(usuario: Usuario, assunto, mensagem, tipo_email):
-
-        send_mail(subject=assunto, message=mensagem, from_email=settings.DEFAULT_FROM_EMAIL, 
-        recipient_list=[usuario.email], fail_silently=False)
+    def enviar_email(usuario: Usuario, assunto, mensagem, tipo_email="", html_message=None):
+        send_mail(subject=assunto, message=mensagem, from_email=settings.EMAIL_HOST_USER, 
+        recipient_list=[usuario.email], fail_silently=False, html_message=html_message)
         
-        Email.objects.create(assunto=assunto, mensagem=mensagem, tipo_email=tipo_email)

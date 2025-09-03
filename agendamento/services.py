@@ -3,11 +3,13 @@ from triagem.models import TriagemIA
 import re, os
 from Trimed import settings
 
+# genai.configure(api_key="AIzaSyBms56-kweNlM6_PUFdcnGK91hHN3dMt8E")
+
 class IAService:
 
     @staticmethod
     def gerar_diagnostico(ficha):
-
+        
         genai.configure(api_key=settings.GEMINI_API_KEY)
         model = genai.GenerativeModel("gemma-3n-e4b-it")
 
@@ -48,3 +50,5 @@ class IAService:
         TriagemIA.objects.create(ficha_medica_paciente=ficha, diagnostico_IA=diagnostico, prioridade_IA=prioridade)
 
         return {"diagnostico": diagnostico, "prioridade": prioridade}
+    
+    

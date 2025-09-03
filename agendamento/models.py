@@ -18,7 +18,7 @@ class Agendamento(models.Model):
     class Meta:
         verbose_name = "Agendamento"
         verbose_name_plural = "Agendamentos"
-
+        
     # def __str__(self):
     #     return f"Agendamento de {self.triagem_IA.} - Agendamento #{self.pk}"
     
@@ -39,7 +39,7 @@ class FichaMedicaPaciente(models.Model):
     alergia_medicamento = models.TextField(blank=True, default=TEXT_DEFAULT, verbose_name='Medicamentos de alergia')
     possui_doencas_cronicas = models.TextField(blank=True, default=TEXT_DEFAULT, verbose_name="O paciente possui alguma doença crônica? Se sim, qual(is)")
     historico_familiar_de_doencas = models.TextField(blank=True, default=TEXT_DEFAULT, verbose_name="Os sintomas possuem algum histórico familiar? Se sim, quem?")
-
+    
     class Meta:
         verbose_name = "Ficha médica do paciente"
         verbose_name_plural = "Fichas médicas dos pacientes"

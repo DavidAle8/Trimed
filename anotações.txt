@@ -59,3 +59,5 @@ npm install --save @fortawesome/free-solid-svg-icons
 npm install --save @fortawesome/react-fontawesome
 npm install react-input-mask
 npm install date-fns
+
+npx create-react-app Frontend

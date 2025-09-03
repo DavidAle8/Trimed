@@ -8,3 +8,4 @@ router.register(r'agendamento', AgendamentoViewSet)
 
 urlpatterns = router.urls
 
+# http://127.0.0.1:8000/api/ficha-medica-paciente

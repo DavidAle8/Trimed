@@ -10,9 +10,10 @@ class TriagemEnfermeiroSerializer(serializers.ModelSerializer):
         
 class TriagemIASerializer(serializers.ModelSerializer):
     
-    class Meta():
+    class Meta:
         model = TriagemIA
-        fields = ['id','data_triagem','diagnostico_IA','prioridade_IA','ficha','paciente','agendamento']
+        fields = ['id', 'ficha_medica_paciente', 'diagnostico_IA', 'prioridade_IA', 'status_agendamento']
+        depth = 1
 
         
         

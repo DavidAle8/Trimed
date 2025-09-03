@@ -8,6 +8,8 @@ from notificacao.services import EmailFactory
 from django.db import transaction
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .helpers import gerar_token
+from usuario.facade.validatorfacade import ValidationFacade
+from usuario.factory.factoryvalidate import TokenFactory
 
 User = get_user_model()
 
@@ -24,7 +26,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         return data
 
 
-""" 
+"""
     Serve para mudar a senha dado o token, senha e confirmar senha. 
     Antes valida se o token, senha e confirmar senha estão digitados corretamente antes de salvar a senha
 """
@@ -42,18 +44,10 @@ class MudarSenhaSerializer(serializers.Serializer):
         
         token_front = data.get("token")
         
-        if not token_front:
-            raise serializers.ValidationError({"token": "O token é obrigatório."})
-
         try:
-            cadastro_token = Token.objects.get(token=token_front)
-            if cadastro_token.expirou():
-                raise serializers.ValidationError({"token": "Token digitado foi expirado, por favor gere outro token."})
-        except Token.DoesNotExist:
-            raise serializers.ValidationError({"token": "O token digitado não existe, verifique se foi digitado corretamente."})
-        
-        if cadastro_token.usuario.email != data.get("email"):
-            raise serializers.ValidationError({"email": "Token não pertence a esse e-mail."})
+            cadastro_token = TokenFactory().validate(token=token_front)
+        except ValueError as e:
+            raise serializers.ValidationError({"token": str(e)})
 
         self.instance_token = cadastro_token
 
@@ -68,7 +62,6 @@ class MudarSenhaSerializer(serializers.Serializer):
         with transaction.atomic():
             usuario.set_password(senha)
 
-            # só altera flags se o atributo existir e estiver no estado de "primeiro acesso"
             if getattr(usuario, "status_registro", None) == "PENDENTE" and usuario.is_active is False:
                 usuario.is_active = True
                 usuario.status_registro = "AUTORIZADO"
@@ -80,6 +73,7 @@ class MudarSenhaSerializer(serializers.Serializer):
 
 
 
+""" Gera o token para o usuario alterar a senha. Valida se o email digitado existe, se existir, manda o token por email"""
 class TokenSerializer(serializers.ModelSerializer):
     
     email = serializers.EmailField(write_only=True)
@@ -90,6 +84,7 @@ class TokenSerializer(serializers.ModelSerializer):
         read_only_fields = ['expira_em', 'token', 'usuario'] 
 
     def create(self, validated_data):
+        
         email_front = validated_data['email']
 
         try:
@@ -106,6 +101,7 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 
+""" Serialziers voltadas aos usuarios"""
 class UsuarioSerializer(serializers.ModelSerializer):
     
     senha = serializers.CharField(write_only=True, required=False)
@@ -117,19 +113,20 @@ class UsuarioSerializer(serializers.ModelSerializer):
         #extra_kwargs = {'senha': {'write_only': True}}
        
     def validate(self, data):
+
+        # fachada que valida os dados bases de cada classe.
+        erros = ValidationFacade(data).validar()
         
+        if erros:  
+            raise serializers.ValidationError(erros)
+
         senha = data.get('senha')
         confirmar_senha = data.get('confirmar_senha')
-
+        
         if senha and confirmar_senha and senha != confirmar_senha:
             raise serializers.ValidationError({"confirmar_senha": "As senhas digitadas não coincidem."})
-        return data
-    
-    def create(self, validated_data):
         
-        senha = validated_data.pop('senha', None)
-        user = Usuario.objects.create_user(password=senha, **validated_data)
-        return user
+        return data
 
     def update(self, instance, validated_data):
         

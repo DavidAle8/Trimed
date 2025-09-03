@@ -7,6 +7,7 @@ from django.db import transaction
 from notificacao.services import EmailFactory
 
 class FichaMedicaPacienteSerializer(serializers.ModelSerializer):
+	
     
     class Meta():
         model = FichaMedicaPaciente
@@ -19,7 +20,8 @@ class AgendamentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Agendamento
         fields = ['data_hora_consulta', 'orientacoes']
-
+        # read_only_fields = ['triagem_IA']
+     
     def validate(self, attrs):
         
         """Verifica conflito de data/hora para o mesmo médico."""
@@ -36,7 +38,7 @@ class AgendamentoSerializer(serializers.ModelSerializer):
         
         request = self.context['request']
         medico = request.user.medico
-        triagem = self.context['triagem']  # já passado pela view
+        triagem = self.context['triagem_IA']  # já passado pela view
 
         with transaction.atomic():
             agendamento = Agendamento.objects.create(
@@ -52,4 +54,8 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
             EmailFactory.email_confirmacao_agendamento(paciente)
         
-        return agendamento  
+        return agendamento
+    
+    
+    
+    

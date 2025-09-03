@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .permissions import IsAdministradorSistema, IsRH
+from usuario.helpers import gerar_token
 
 
 
@@ -30,7 +31,7 @@ class LogoutView(APIView):
             refresh_token = request.data["refresh"]
             token_auth = RefreshToken(refresh_token)
             token_auth.blacklist()
-            return Response( {"message": "Logout bem-sucedido."}, status=status.HTTP_205_RESET_CONTENT)
+            return Response({"message": "Logout bem-sucedido."}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Token de refresh inválido ou não fornecido."},status=status.HTTP_400_BAD_REQUEST)
             
@@ -67,7 +68,6 @@ class TokenViewSet(ModelViewSet):
         
 
          
-         
 
 """ ************************ Lógica do CRUD e AUTHENTICATION dos Usuarios *********************** """
 
@@ -77,11 +77,12 @@ class MedicoViewSet(ModelViewSet):
     serializer_class = MedicoSerializer
 
     def perform_create(self, serializer):
-        # link_mudar_senha = f"https://meusite.com.br/mudar-senha?token={token}"
+
         medico = serializer.save(is_active=False)
         medico.set_unusable_password()
         medico.save()
-        # EmailFactory.email_primeiro_acesso(medico, link_mudar_senha)
+        token = gerar_token()
+        EmailFactory.email_primeiro_acesso(medico, token) 
         
     def get_permissions(self):
         if self.action == 'create':
@@ -108,11 +109,11 @@ class EnfermeiroViewSet(viewsets.ModelViewSet):
     serializer_class = EnfermeiroSerializer
     
     def perform_create(self, serializer):
-        # link_mudar_senha = f"https://meusite.com.br/mudar-senha?token={token}"
         Enfermeiro = serializer.save(is_active=False)
         Enfermeiro.set_unusable_password()
         Enfermeiro.save()
-        # EmailFactory.email_primeiro_acesso(Enfermeiro, link_mudar_senha)
+        token = gerar_token()
+        EmailFactory.email_primeiro_acesso(Enfermeiro, token)
 
     def get_permissions(self):
         if self.action == 'create':
@@ -128,11 +129,11 @@ class AdministradorSistemaViewSet(viewsets.ModelViewSet):
     serializer_class = AdministradorSistemaSerializer
 
     def perform_create(self, serializer):
-        # link_mudar_senha = f"https://meusite.com.br/mudar-senha?token={token}"
         adm_sistema = serializer.save(is_active=False)
         adm_sistema.set_unusable_password()
         adm_sistema.save()
-        # EmailFactory.email_primeiro_acesso(adm_sistema, link_mudar_senha)
+        token = gerar_token()
+        EmailFactory.email_primeiro_acesso(adm_sistema, token)
            
     def get_permissions(self):
         if self.action == 'create':
