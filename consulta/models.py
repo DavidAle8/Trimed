@@ -103,5 +103,6 @@ class ReceitaItem(models.Model):
     
     
 class Exames(models.Model):
-    pass 
+    pass
+    # exame = models.TextField()
 

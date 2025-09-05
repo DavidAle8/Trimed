@@ -160,8 +160,7 @@ class Enfermeiro(Usuario):
     
     
     
-    
-    
+
 class AdministradorSistema(Usuario):
     
     CARGOS = [
@@ -236,8 +235,6 @@ class Token(models.Model):
 
     def expirou(self):
         return timezone.now() > self.expira_em
-    
-
 
     class Meta:
         verbose_name = "Token"

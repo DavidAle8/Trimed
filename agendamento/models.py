@@ -8,8 +8,8 @@ from django.contrib.auth.hashers import make_password
 
 class Agendamento(models.Model):
     
-    triagem_IA = models.OneToOneField("triagem.TriagemIA", on_delete=models.PROTECT, verbose_name="Paciente")
-    medico = models.ForeignKey(Medico, on_delete=models.PROTECT, verbose_name="Médico")    
+    triagem_IA = models.OneToOneField("triagem.TriagemIA", on_delete=models.CASCADE, verbose_name="Paciente")
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, verbose_name="Médico")    
     
     data_criacao_agendamento = models.DateTimeField(auto_now_add=True, verbose_name="Data da criação do agendamento")
     data_hora_consulta = models.DateTimeField(verbose_name='Data e hora da consulta')
@@ -28,7 +28,7 @@ class Agendamento(models.Model):
 """" Ficha é uma ficha que o paciente passará para a gente. A IA recebe, tria, manda pro medico e o medico retorna o seu agendamento """
 class FichaMedicaPaciente(models.Model):
     
-    paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT, verbose_name="Paciente")
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, verbose_name="Paciente")
     
     TEXT_DEFAULT = "Não informado"
     

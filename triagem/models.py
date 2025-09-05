@@ -8,7 +8,7 @@ class TriagemEnfermeiro(models.Model):
     
     TEXT_DEFAULT = "Procedimento não realizado"
 
-    agendamento = models.OneToOneField(Agendamento, on_delete=models.CASCADE, verbose_name="Agendamento do Paciente") 
+    agendamento = models.OneToOneField(Agendamento, null=False, on_delete=models.CASCADE, verbose_name="Agendamento do Paciente") 
     enfermeiro = models.ForeignKey(Enfermeiro, on_delete=models.SET_NULL, null=True, verbose_name="Enfermeiro Responsável")
     
     pressao_arterial = models.CharField(max_length=10, blank=True, default=TEXT_DEFAULT, verbose_name="Pressão Arterial (mmHg)")

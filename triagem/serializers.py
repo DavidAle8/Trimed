@@ -4,9 +4,20 @@ from .models import TriagemEnfermeiro, TriagemIA
 
 class TriagemEnfermeiroSerializer(serializers.ModelSerializer):
     
-    class Meta():
+    class Meta:
         model = TriagemEnfermeiro
-        fields = '__all__'
+        fields = [
+            'agendamento',  
+            'enfermeiro',  
+            'pressao_arterial',
+            'temperatura',
+            'frequencia_cardiaca',
+            'frequencia_respiratoria',
+            'saturacao_oxigenio',
+            'glicemia_capilar',
+        ]
+        read_only_fields = ['agendamento', 'enfermeiro'] 
+        depth = 1
         
 class TriagemIASerializer(serializers.ModelSerializer):
     

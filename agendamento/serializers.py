@@ -8,7 +8,6 @@ from notificacao.services import EmailFactory
 
 class FichaMedicaPacienteSerializer(serializers.ModelSerializer):
 	
-    
     class Meta():
         model = FichaMedicaPaciente
         fields = ['id', 'motivo_consulta', 'medicacao_para_sintoma', 'medicamento_diario', 'alergia_geral', 
