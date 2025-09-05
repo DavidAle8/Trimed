@@ -176,7 +176,7 @@ class EnfermeiroSerializer(UsuarioSerializer):
         return useruario_enfermeiro
 
 
-
+    
 
 class AdministradorSistemaSerializer(UsuarioSerializer):
     

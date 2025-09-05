@@ -17,6 +17,7 @@ class TriagemEnfermeiro(models.Model):
     frequencia_respiratoria = models.IntegerField(blank=True, null=True, default=0, verbose_name="Frequência Respiratória (rpm)")
     saturacao_oxigenio = models.IntegerField(blank=True, null=True, default=0, verbose_name="Saturação de Oxigênio (%)")
     glicemia_capilar = models.IntegerField(blank=True, null=True, default=0, verbose_name="Glicemia Capilar (mg/dL)") 
+    observacoes_medicas = models.TextField(blank=True ,verbose_name="Informe algumas observações médicas se necessário")
     
     class Meta:
         verbose_name = "Triagem do enfermeiro(a)"
@@ -34,10 +35,11 @@ class TriagemIA(models.Model):
     diagnostico_IA = models.TextField(verbose_name="Diagnóstico da IA")
     PRIORIDADE_IA_CHOICES = [
         ('EMERGENCIA - VERMELHO', 'EMERGÊNCIA (vermelho)'),
-        ('MUITO_URGENTE - LARANJA', 'MUITO URGENTE (laranja)'),
+        ('MUITO URGENTE - LARANJA', 'MUITO URGENTE (laranja)'),
         ('URGENTE - AMARELO', 'URGENTE (amarelo)'),
-        ('POUCO_URGENTE - VERDE', 'POUCO URGENTE (verde)'),
-        ('NAO_URGENTE - AZUL', 'NÃO URGENTE (azul)'),
+        ('POUCO URGENTE - VERDE', 'POUCO URGENTE (verde)'),
+        ('NAO URGENTE - AZUL', 'NÃO URGENTE (azul)'),
+        ('INDEFINIDO', 'INDEFINIDO'),
     ]
     prioridade_IA = models.CharField(max_length=40, choices=PRIORIDADE_IA_CHOICES, blank=True, null=True,verbose_name="Prioridade Classificada pela IA")
         

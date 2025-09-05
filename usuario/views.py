@@ -150,3 +150,10 @@ class RHViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return [AllowAny()] 
         return [IsAuthenticated()] 
+    
+    
+
+class WhoAmI(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({'nome': request.user.nome_completo, 'email': request.user.email, 'id': request.user.id})

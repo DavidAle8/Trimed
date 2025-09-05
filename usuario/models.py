@@ -12,6 +12,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 """ Classe para redefinir quais os ateributos serão usados para login (email e senha)
     e criptografia de senha.
 """
+    
 class UsuarioManager(BaseUserManager):
 
     def _create_user(self, email, password=None, **extra_fields):
@@ -36,6 +37,13 @@ class UsuarioManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
+        
+        extra_fields.setdefault("data_nascimento", "2000-01-01")
+        extra_fields.setdefault("cpf", "000.000.000-00")
+        extra_fields.setdefault("endereco", "Admin Street")
+        extra_fields.setdefault("telefone", "000000000")
+        extra_fields.setdefault("nome_completo", "Admin")
+
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superusuário precisa ter is_staff=True.")

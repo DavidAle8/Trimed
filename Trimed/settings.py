@@ -14,7 +14,7 @@ ALLOWED_HOSTS = []
 # ----------------------
 # AUTENTICAÇÃO PERSONALIZADO
 # ----------------------
-AUTH_USER_MODEL = 'usuario.Usuario'
+AUTH_USER_MODEL = 'usuario.Usuario' # ************* AQ O USER MODEL ******************
 
 
 # ----------------------

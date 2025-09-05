@@ -1,7 +1,6 @@
 from django.db import models
 from triagem.models import TriagemEnfermeiro
 from usuario.models import Medico, Paciente
-# Create your models here.
 
 
 class ConsultaMedica(models.Model):
@@ -25,7 +24,7 @@ class ConsultaMedica(models.Model):
         return f"Médico Responsável: {self.medico.nome_completo} - Avaliação Médica de {paciente_nome}"    
     
     
-    
+        
     
 class ReceitaMedica(models.Model):
 
@@ -43,13 +42,14 @@ class ReceitaMedica(models.Model):
     
 class Medicamento(models.Model):
     
-    nome_medicamento = models.CharField(max_length=150, verbose_name="Medicamento")
     TARJA_CHOICE = [
         ('Tarja Preta', 'Tarja preta'),
         ('Tarja Vermelha', 'Tarja vermelha'),
         ('Tarja Amarela', 'Tarja amarela'),
         ('Sem Tarja', 'Sem tarja'),
     ]
+    
+    nome_medicamento = models.CharField(max_length=150, verbose_name="Medicamento")
     tarja_medicamento = models.CharField(max_length=150, choices=TARJA_CHOICE, verbose_name="Tarjad do medicamento")
 
     def __str__(self):
@@ -62,13 +62,6 @@ class Medicamento(models.Model):
 
 
 class ReceitaItem(models.Model):
-    
-    receita = models.ForeignKey(ReceitaMedica, on_delete=models.CASCADE)
-    medicamento = models.ForeignKey(Medicamento, on_delete=models.PROTECT)
-
-    dosagem = models.CharField(max_length=100, verbose_name="Dosagem do medicamento")
-    quantidade = models.IntegerField(verbose_name="Quantidade")
-    recomendacoes = models.TextField(blank=True, verbose_name="Recomendações")  
     
     VIAS_MEDICAMENTO_CHOICES = [
         
@@ -91,6 +84,13 @@ class ReceitaItem(models.Model):
         ('Intraperitoneal', 'Via Intraperitoneal'),
         # ('outra', 'Outra (Especificar)')
     ]
+    
+    receita = models.ForeignKey(ReceitaMedica, on_delete=models.CASCADE)
+    medicamento = models.ForeignKey(Medicamento, on_delete=models.PROTECT)
+
+    dosagem = models.CharField(max_length=100, verbose_name="Dosagem do medicamento")
+    quantidade = models.IntegerField(verbose_name="Quantidade")
+    recomendacoes = models.TextField(blank=True, verbose_name="Recomendações")  
     via_medicamento = models.CharField(max_length=100, choices=VIAS_MEDICAMENTO_CHOICES)
 
     class Meta:
@@ -103,6 +103,44 @@ class ReceitaItem(models.Model):
     
     
 class Exames(models.Model):
-    pass
-    # exame = models.TextField()
-
+    
+    PRIORIDADE_EXAME_CHOICES = [
+        ('Normal', 'Normal'),
+        ('Urgente', 'Urgente'),
+        ('Eletivo', 'Eletivo'),
+    ]
+    
+    TIPO_EXAME_CHOICES = [
+        ("Laboratorial", "Laboratorial"),
+        ("Imagem", "Imagem"),
+        ("Cardiológico", "Cardiológico"),
+        ("Neurológico", "Neurológico"),
+        ("Gastrointestinal", "Gastrointestinal"),
+        ("Pulmonar", "Pulmonar"),
+        ("Endocrinológico", "Endocrinológico"),
+        ("Reumatológico", "Reumatológico"),
+        ("Nenhum", "Nenhum"),
+    ]
+     
+    STATUS_EXAME_CHOICES = [
+        ("Solicitado", "Solicitado"), 
+        ("Em andamento", "Em andamento"), 
+        ("Concluído", "Concluído"), 
+        ("Cancelado", "Cancelado")
+    ]
+    
+    consulta = models.ForeignKey(ConsultaMedica, on_delete=models.CASCADE, related_name="exames")
+    
+    exame_solicitado = models.TextField(default="Não foi solicitado", verbose_name="Solicite o exame do paciete")
+    tipo_exame = models.CharField(default="Nenhum", max_length=50, choices=TIPO_EXAME_CHOICES, verbose_name="Tipo do exame solicitado")
+    justificativa_exame = models.TextField(verbose_name="Justificativa do exame solicitado")
+    prioridade_exame = models.TextField(default="Normal", choices=PRIORIDADE_EXAME_CHOICES, verbose_name="Prioridade do exame")
+    status_exame = models.CharField(max_length=50, default="Solicitado", choices=STATUS_EXAME_CHOICES, verbose_name="Status do exame")
+    data_solicitacao_exame = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Exame"
+        verbose_name_plural = "Exames"
+        
+    def __str__(self):
+        return f"({self.consulta.triagem_enfermeiro.agendamento.triagem_IA.ficha_medica_paciente.paciente.nome_completo})"

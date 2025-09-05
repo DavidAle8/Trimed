@@ -15,6 +15,7 @@ class TriagemEnfermeiroSerializer(serializers.ModelSerializer):
             'frequencia_respiratoria',
             'saturacao_oxigenio',
             'glicemia_capilar',
+            'observacoes_medicas',
         ]
         read_only_fields = ['agendamento', 'enfermeiro'] 
         depth = 1

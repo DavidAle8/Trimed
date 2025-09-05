@@ -35,15 +35,23 @@ class AgendamentoViewSet(ModelViewSet):
         triagem_id = self.request.data.get('triagem_IA')
         if triagem_id:
             try:
-                context['triagem'] = TriagemIA.objects.get(id=triagem_id)
+                context['triagem_IA'] = TriagemIA.objects.get(id=triagem_id)
             except TriagemIA.DoesNotExist:
                 raise serializers.ValidationError("Triagem não encontrada")
         return context
 
     def perform_create(self, serializer):
+        print(">>> REQUEST USER:", getattr(self.request.user, "email", None), self.request.user.id)
+        print(">>> REQUEST DATA:", self.request.data)
         agendamento = serializer.save()
+        print(">>> AGENDAMENTO.PACIENTE:", agendamento.triagem_IA.ficha_medica_paciente.paciente.email)
         paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
-        EmailFactory.email_confirmacao_agendamento(paciente)
+        EmailFactory.email_confirmacao_agendamento(paciente)    
         
+    # def perform_create(self, serializer):
+    #     agendamento = serializer.save()
+    #     paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
+    #     EmailFactory.email_confirmacao_agendamento(paciente)
+            
 
     
