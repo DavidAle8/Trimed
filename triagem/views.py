@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from agendamento.models import Agendamento
+from usuario.models import Enfermeiro
 from .models import TriagemEnfermeiro, TriagemIA
 from .serializers import TriagemEnfermeiroSerializer, TriagemIASerializer
 from rest_framework.generics import get_object_or_404
@@ -17,15 +18,21 @@ class TriagemEnfermeiroViewSet(ModelViewSet):
     
     queryset = TriagemEnfermeiro.objects.all()
     serializer_class = TriagemEnfermeiroSerializer
+    
+    def get_queryset(self):
+    
+        enfermeiro = Enfermeiro.objects.get(user=self.request.user)
+        return TriagemEnfermeiro.objects.filter(enfermeiro=enfermeiro)
+
 
     def perform_create(self, serializer):
-        # recebe do frontend o ID do agendamento
+
         agendamento_id = self.request.data.get("agendamento_id")
         if not agendamento_id:
             raise ValidationError({"agendamento_id": "Este campo é obrigatório."})
 
         agendamento = get_object_or_404(Agendamento, pk=agendamento_id)
-        enfermeiro = self.request.user.enfermeiro  # usuário logado
+        enfermeiro = self.request.user.enfermeiro 
 
         serializer.save(agendamento=agendamento, enfermeiro=enfermeiro)
 
