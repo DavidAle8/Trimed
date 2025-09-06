@@ -21,6 +21,10 @@ class AgendamentoSerializer(serializers.ModelSerializer):
         fields = ['data_hora_consulta', 'orientacoes']
         # read_only_fields = ['triagem_IA']
      
+    def get_queryset(self):
+        user = self.request.user 
+        return Agendamento.objects.filter(triagem_IA__ficha_medica_paciente__paciente=user,triagem_IA__status_agendamento='CONFIRMADO').order_by('data_hora_consulta')
+    
     def validate(self, attrs):
         # Aqui o médico deve vir do dado da request, não do usuário logado
         medico_id = self.context['request'].data.get('medico')

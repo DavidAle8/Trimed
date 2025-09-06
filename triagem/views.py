@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from agendamento.models import Agendamento
+from usuario.models import Enfermeiro
 from .models import TriagemEnfermeiro, TriagemIA
 from .serializers import TriagemEnfermeiroSerializer, TriagemIASerializer
 from rest_framework.generics import get_object_or_404
@@ -17,6 +18,12 @@ class TriagemEnfermeiroViewSet(ModelViewSet):
     
     queryset = TriagemEnfermeiro.objects.all()
     serializer_class = TriagemEnfermeiroSerializer
+
+    
+    def get_queryset(self):
+        # só retorna triagens feitas pelo enfermeiro logado
+        enfermeiro = Enfermeiro.objects.get(user=self.request.user)
+        return TriagemEnfermeiro.objects.filter(enfermeiro=enfermeiro)
 
     def perform_create(self, serializer):
         # recebe do frontend o ID do agendamento
