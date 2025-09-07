@@ -9,30 +9,29 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsMedico
+from .permissions import IsEnfermeiro, IsMedico
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied
 
 
 class TriagemEnfermeiroViewSet(ModelViewSet):
     
     queryset = TriagemEnfermeiro.objects.all()
     serializer_class = TriagemEnfermeiroSerializer
-
-    
-    def get_queryset(self):
-        # só retorna triagens feitas pelo enfermeiro logado
-        enfermeiro = Enfermeiro.objects.get(user=self.request.user)
-        return TriagemEnfermeiro.objects.filter(enfermeiro=enfermeiro)
+    permission_classes = [IsAuthenticated, IsEnfermeiro]
 
     def perform_create(self, serializer):
-        # recebe do frontend o ID do agendamento
+
         agendamento_id = self.request.data.get("agendamento_id")
         if not agendamento_id:
             raise ValidationError({"agendamento_id": "Este campo é obrigatório."})
 
         agendamento = get_object_or_404(Agendamento, pk=agendamento_id)
-        enfermeiro = self.request.user.enfermeiro  # usuário logado
+
+        if not hasattr(self.request.user, 'enfermeiro'):
+            raise PermissionDenied("Apenas enfermeiros podem criar triagens.")
+        enfermeiro = self.request.user.enfermeiro
 
         serializer.save(agendamento=agendamento, enfermeiro=enfermeiro)
 
@@ -44,10 +43,8 @@ class TriagemIAViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def get_permissions(self):
-        if self.action == 'list':
-            return [IsMedico()]
-        if self.action == 'agendar':
-            return [IsMedico()]
+        if self.action in ['list', 'retrieve', 'agendar']:
+            return [IsMedico()]  # Médicos podem listar e agendar
         return [IsAuthenticated()]
 
     

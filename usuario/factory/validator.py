@@ -106,21 +106,17 @@ class CORENFactory(Validator):
     
     
 class TokenFactory(Validator):
-
+    
     def validate(self, token: str) -> Token:
-        """
-        Valida o token enviado pelo usuário.
-        Retorna o objeto Token se válido, ou levanta ValueError se inválido.
-        """
         if not token:
             raise ValueError("O token é obrigatório.")
 
+        token = token.strip()  # remove espaços
         try:
             cadastro_token = Token.objects.get(token=token)
         except Token.DoesNotExist:
             raise ValueError("O token digitado não existe, verifique se foi digitado corretamente.")
 
-        # verifica se expirou
         if cadastro_token.expirou():
             raise ValueError("Token digitado foi expirado, por favor gere outro token.")
 
