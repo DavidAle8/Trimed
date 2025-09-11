@@ -7,7 +7,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+import google.generativeai as genai
+import os
 
+#client = genai.Client(api_key=os.getenv("AIzaSyBms56-kweNlM6_PUFdcnGK91hHN3dMt8E"))
+genai.configure(api_key="AIzaSyBms56-kweNlM6_PUFdcnGK91hHN3dMt8E")
+
+model = genai.GenerativeModel("gemma-3n-e4b-it")
 
 class FichaMedicaPacienteViewSet(ModelViewSet):
     
@@ -19,6 +25,11 @@ class AgendamentoViewSet(ModelViewSet):
     
     queryset = Agendamento.objects.all()
     serializer_class = AgendamentoSerializer
+    
+    def perform_create(self, serializer):
+        agendamento = serializer.save()
+
+        return agendamento
     
     @action(detail=True, methods=['post'])
     def confirmar(self, request, pk=None):
@@ -35,6 +46,7 @@ class AgendamentoViewSet(ModelViewSet):
         agendamento.save()
         return Response({'status': 'Agendamento cancelado'})
     
+
     @action(detail = True, methods=['put'])
     def atualizar(self,request, pk=None):
         serializer = self.get_serializer(data = request.data)
@@ -46,13 +58,40 @@ class AgendamentoViewSet(ModelViewSet):
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-
-
     @action(detail=True, methods=['get'])
     def detalhes(self, request, pk=None):
         agendamento = self.get_object()
         serializer = self.get_serializer(agendamento)
         return Response(serializer.data)
+    
+
+    @action(detail=True, methods=['get'])
+    def gerar_diagnostico(self, request, pk=None):
+        agendamento = self.get_object()
+        try:
+            ficha = FichaMedicaPaciente.objects.get(agendamento=agendamento)
+        except FichaMedicaPaciente.DoesNotExist:
+            return Response(
+                {"error": "Ficha médica não encontrada para este agendamento"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        prompt = f"""
+        Dados do paciente:
+        Motivo da consulta: {ficha.motivo_consulta}
+        Historico: {ficha.historico_familiar_de_doencas}
+        Doenças Cronicas: {ficha.possui_doencas_cronicas}
+        Alergia a medicamento: {ficha.alergia_medicamento}
+        
+        Você é um super médico da UBS que sabe muito 
+        sobre doenças no geral. Crie uma triagem com os 
+        dados passados, tendo as classificações sendo 
+        Grave, Médio ou Leve. Não desconsidere a ideia que um médico
+        verificará sua resposta.
+        """
+
+        response = model.generate_content(prompt)
+        return Response({"diagnostico": response.text})
     
 
     # Colocar metodo que pegue a ficha e mande para a IA

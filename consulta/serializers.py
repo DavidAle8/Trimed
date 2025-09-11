@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 from .models import ConsultaMedica, ReceitaMedica, Medicamento, Exames
 
 
+
 class ConsultaMedicaSerializer(serializers.ModelSerializer):
     
     class Meta():
