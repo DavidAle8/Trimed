@@ -239,16 +239,12 @@ class Token(models.Model):
     
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     token = models.CharField(max_length=6, unique=True, editable=False)
-    expira_em = models.DateTimeField(default=(timezone.now() + timedelta(minutes=15)))
-
-    def expirou(self):
-        return timezone.now() > self.expira_em
 
     class Meta:
         verbose_name = "Token"
         verbose_name_plural = "Tokens"
 
     def __str__(self):
-        return f"{self.token} - vaidade: {self.expira_em}"
+        return f"{self.token}"
     
     

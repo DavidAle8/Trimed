@@ -8,6 +8,7 @@ class ConsultaMedicaSerializer(serializers.ModelSerializer):
     class Meta():
         model = ConsultaMedica
         fields = '__all__'
+        read_only_fields = []
             
 class ReceitaMedicaSerializer(serializers.ModelSerializer):
     

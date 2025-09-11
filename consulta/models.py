@@ -8,9 +8,7 @@ class ConsultaMedica(models.Model):
     triagem_enfermeiro = models.OneToOneField(TriagemEnfermeiro, on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico, on_delete=models.PROTECT, verbose_name="Médico Responsável")
     
-    exame_fisico_detalhado = models.TextField(blank=True, verbose_name="Exame Físico Detalhado (Inspeção, Palpação, Percussão, Ausculta por sistemas)")
-    possiveis_diagnosticas = models.TextField(blank=True, verbose_name="Hipóteses Diagnósticas (possíveis diagnósticos)")
-    diagnostico_final = models.TextField(blank=True, verbose_name="Diagnóstico(s) Final(is) (incluir CID-10 se aplicável)")
+    diagnostico = models.TextField(blank=True, verbose_name="Diagnóstico(s) Final(is) (incluir CID-10 se aplicável)")
     exames_solicitados = models.TextField(blank=True, verbose_name="Exames Complementares Solicitados (Laboratoriais, Imagem, etc.)")
     orientacoes = models.TextField(blank=True, verbose_name="Orientações (ex: dieta, repouso, fisioterapia)")
     
@@ -19,7 +17,7 @@ class ConsultaMedica(models.Model):
         verbose_name_plural = "Consultas médicas"
         
     def __str__(self):
-        paciente_nome = self.triagem_enfermeiro.ficha_clinica_paciente.paciente.nome_completo
+        paciente_nome = self.triagem_enfermeiro.agendamento.triagem_IA.ficha_medica_paciente.paciente.nome_completo
         # data_hora = self.data_hora_triagem.strftime('%d/%m/%Y %H:%M')
         return f"Médico Responsável: {self.medico.nome_completo} - Avaliação Médica de {paciente_nome}"    
     

@@ -1,4 +1,3 @@
-
 from .models import Usuario, Medico, Paciente, Enfermeiro, AdministradorSistema, RH, Token
 from .serializers import (MedicoSerializer, PacienteSerializer, EnfermeiroSerializer, 
 TokenSerializer, AdministradorSistemaSerializer, RHSerializer, MudarSenhaSerializer, LoginSerializer)
@@ -13,6 +12,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .permissions import IsAdministradorSistema, IsRH
 from usuario.helpers import gerar_token
+from rest_framework.generics import GenericAPIView
 
 
 
@@ -41,15 +41,23 @@ class LogoutView(APIView):
 
 """ ************************ Lógica para validação dos dados para mudança de senha *********************** """
 
-class MudarSenhaView(APIView):
-    
+class MudarSenhaView(GenericAPIView):
+    serializer_class = MudarSenhaSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        serializer = MudarSenhaSerializer(data=request.data)
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer()
+        return Response(serializer.data)
+    
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid():
             serializer.save()
-            return Response({"mensagem": "Senha atualizada com sucesso."}, status=status.HTTP_200_OK)
+            return Response(
+                {"mensagem": "Senha atualizada com sucesso."},
+                status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -59,9 +67,10 @@ class TokenViewSet(ModelViewSet):
     
     queryset = Token.objects.all()
     serializer_class = TokenSerializer
-    http_method_names = ['post']
+    http_method_names = ['get', 'post']
 
     def perform_create(self, serializer):
+        
         token = serializer.save()
         usuario = token.usuario
         EmailFactory.email_token(usuario, token.token)
@@ -81,8 +90,10 @@ class MedicoViewSet(ModelViewSet):
         medico = serializer.save(is_active=False)
         medico.set_unusable_password()
         medico.save()
-        token = gerar_token()
-        EmailFactory.email_primeiro_acesso(medico, token) 
+        serializer = TokenSerializer(data={'email': medico.email}) #LEMBRAR DE COLOCAR TD ISSO NOS OUTROS USUARIOS, ENFERMEIRO, ADM...
+        serializer.is_valid(raise_exception=True)
+        token_obj = serializer.save() 
+        EmailFactory.email_primeiro_acesso(medico, token_obj.token)
         
     def get_permissions(self):
         if self.action == 'create':
@@ -112,8 +123,10 @@ class EnfermeiroViewSet(viewsets.ModelViewSet):
         Enfermeiro = serializer.save(is_active=False)
         Enfermeiro.set_unusable_password()
         Enfermeiro.save()
-        token = gerar_token()
-        EmailFactory.email_primeiro_acesso(Enfermeiro, token)
+        serializer = TokenSerializer(data={'email': Enfermeiro.email}) #LEMBRAR DE COLOCAR TD ISSO NOS OUTROS USUARIOS, ENFERMEIRO, ADM...
+        serializer.is_valid(raise_exception=True)
+        token_obj = serializer.save()
+        EmailFactory.email_primeiro_acesso(Enfermeiro, token_obj.token)
 
     def get_permissions(self):
         if self.action == 'create':
@@ -132,8 +145,10 @@ class AdministradorSistemaViewSet(viewsets.ModelViewSet):
         adm_sistema = serializer.save(is_active=False)
         adm_sistema.set_unusable_password()
         adm_sistema.save()
-        token = gerar_token()
-        EmailFactory.email_primeiro_acesso(adm_sistema, token)
+        serializer = TokenSerializer(data={'email': adm_sistema.email}) #LEMBRAR DE COLOCAR TD ISSO NOS OUTROS USUARIOS, ENFERMEIRO, ADM...
+        serializer.is_valid(raise_exception=True)
+        token_obj = serializer.save()
+        EmailFactory.email_primeiro_acesso(Enfermeiro, token_obj.token)
            
     def get_permissions(self):
         if self.action == 'create':

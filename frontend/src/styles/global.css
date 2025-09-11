@@ -1,0 +1,46 @@
+:root {
+  --primary-color: #2a7fba;       /* Azul principal da identidade visual */
+  --secondary-color: #333;        /* Cor padrão dos textos (cinza escuro) */
+  --background-color: #f5f7fa;    /* Cor de fundo clara para a página */
+  --white: #ffffff;               /* Branco padrão */
+  --gray-light: #e1e5eb;          /* Cinza claro usado para fundos ou bordas suaves */
+  --header-height: 80px;          /* Altura padrão do cabeçalho */
+  --footer-height: 60px;          /* Altura padrão do rodapé */
+}
+
+* {
+  margin: 0;                      /* Remove margens padrão de todos os elementos */
+  padding: 0;                     /* Remove preenchimento padrão */
+  box-sizing: border-box;         /* Inclui bordas e preenchimento no cálculo do tamanho total */
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+  /* Define uma pilha de fontes modernas e compatíveis com vários sistemas */
+}
+
+body {
+  background-color: var(--background-color); /* Aplica fundo claro à página */
+  color: var(--secondary-color);             /* Aplica cor de texto padrão */
+}
+
+a {
+  text-decoration: none;         /* Remove sublinhado de links */
+  color: inherit;                /* Herda a cor do elemento pai */
+}
+
+button {
+  cursor: pointer;               /* Mostra o cursor de "mãozinha" ao passar o mouse */
+  border: none;                  /* Remove borda padrão */
+  outline: none;                 /* Remove contorno ao focar no botão */
+}
+
+.container {
+  max-width: 1200px;             /* Largura máxima do conteúdo */
+  margin: 0 auto;                /* Centraliza horizontalmente */
+  padding: 0 20px;               /* Espaçamento lateral interno */
+}
+
+.top-bar {
+  background-color: var(--primary-color); /* Cor azul definida no :root */
+  height: 8px;                            /* Altura da barrinha superior */
+  width: 100%;                            /* Ocupa toda a largura */
+}
+

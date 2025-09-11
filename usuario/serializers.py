@@ -32,7 +32,7 @@ class LoginSerializer(TokenObtainPairSerializer):
 """
 class MudarSenhaSerializer(serializers.Serializer):
     
-    email = serializers.EmailField()
+    # email = serializers.EmailField()
     token = serializers.CharField() 
     senha = serializers.CharField(write_only=True, min_length=6)
     confirmar_senha = serializers.CharField(write_only=True, min_length=6)
@@ -67,6 +67,7 @@ class MudarSenhaSerializer(serializers.Serializer):
                 usuario.status_registro = "AUTORIZADO"
 
             usuario.save()
+            usuario.refresh_from_db() 
             cadastro_token.delete()
 
         return usuario
@@ -80,8 +81,8 @@ class TokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Token
-        fields = ['token', 'email', 'usuario']
-        read_only_fields = ['expira_em', 'token', 'usuario'] 
+        fields = ['email', 'token', 'usuario']
+        read_only_fields = ['token', 'usuario']
 
     def create(self, validated_data):
         
@@ -110,11 +111,10 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha']
-        #extra_kwargs = {'senha': {'write_only': True}}
+        extra_kwargs = {'senha': {'write_only': True}}
        
     def validate(self, data):
 
-        # fachada que valida os dados bases de cada classe.
         erros = ValidationFacade(data).validar()
         
         if erros:  
@@ -141,7 +141,8 @@ class MedicoSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = Medico
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'crm', 'especialidade']
+        fields = ['id', 'email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'crm', 'especialidade']
+        read_only_fields = ['id']
         
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)
@@ -154,8 +155,9 @@ class PacienteSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = Paciente
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cns']
-
+        fields = ['id', 'email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cns']
+        read_only_fields = ['id']
+        
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)
         usuario_paciente = Paciente.objects.create_user(password=senha, **validated_data)
@@ -168,8 +170,8 @@ class EnfermeiroSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = Enfermeiro
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'coren', 'setor_atuacao']
-
+        fields = ['id', 'email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'coren', 'setor_atuacao']
+        read_only_fields = ['id']
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)
         useruario_enfermeiro = Enfermeiro.objects.create_user(password=senha, **validated_data)
@@ -182,23 +184,22 @@ class AdministradorSistemaSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = AdministradorSistema
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cargo', 'departamento']
-    
+        fields = ['id', 'email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 'telefone', 'senha', 'cargo', 'departamento']
+        read_only_fields = ['id']
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)
         usuario_administrador = AdministradorSistema.objects.create_user(password=senha, **validated_data)
         return usuario_administrador
    
-   
-   
+
          
 class RHSerializer(UsuarioSerializer):
     
     class Meta(UsuarioSerializer.Meta):
         model = RH
-        fields = ['email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 
+        fields = ['id', 'email', 'nome_completo', 'cpf', 'data_nascimento', 'sexo', 'endereco', 
         'telefone', 'senha', 'cargo', 'setor_responsabilidade']
-
+        read_only_fields = ['id']
     def create(self, validated_data):
         senha = validated_data.pop('senha', None)
         usuario_RH = RH.objects.create_user(password=senha, **validated_data)

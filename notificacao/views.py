@@ -9,7 +9,3 @@ class EmailViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EmailSerializer
 
 
-
-# python manage.py makemigrations
-# python manage.py migrate
-

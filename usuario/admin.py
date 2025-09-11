@@ -38,6 +38,6 @@ class RHAdmin(admin.ModelAdmin):
 
 @admin.register(Token)
 class TokenAdmin(admin.ModelAdmin):
-    list_display = ['usuario', 'token', 'expira_em', 'expirou']
+    list_display = ['usuario', 'token']
     search_fields = ['usuario__nome_completo', 'token']
-    list_filter = ['expira_em']
+

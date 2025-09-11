@@ -30,16 +30,12 @@ EXEMPLOS ENDPOINTs:
 # Para o MedicoViewSet, por exemplo, ele geraria URLs como:
 
 # GET /api/medico/: Listar todos os médicos.
-
 # POST /api/medico/: Criar um novo médico.
-
 # GET /api/medico/{id}/: Detalhar um médico específico.
-
 # PUT /api/medico/{id}/: Atualizar completamente um médico.
-
 # PATCH /api/medico/{id}/: Atualizar parcialmente um médico.
-
 # DELETE /api/medico/{id}/: Deletar um médico.
+
 
 
 INSTALAÇÕES:

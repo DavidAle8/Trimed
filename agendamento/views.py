@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from jsonschema import ValidationError
 from triagem.models import TriagemIA
@@ -10,7 +11,6 @@ from .services import IAService
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import PermissionDenied
 from notificacao.services import EmailFactory
-
 from agendamento import serializers
 
 
@@ -39,19 +39,27 @@ class AgendamentoViewSet(ModelViewSet):
             except TriagemIA.DoesNotExist:
                 raise serializers.ValidationError("Triagem não encontrada")
         return context
+    
+    def get_queryset(self):
+            user = self.request.user
+
+            if hasattr(user, 'enfermeiro'):
+                hoje = timezone.now().date()
+                return Agendamento.objects.filter(data_hora_consulta__date=hoje).order_by('data_hora_consulta')
+            
+            elif hasattr(user, 'paciente'):
+                return Agendamento.objects.filter(triagem_IA__ficha_medica_paciente__paciente=user.paciente).order_by('data_hora_consulta')
+            
+            else:
+                return Agendamento.objects.none()
 
     def perform_create(self, serializer):
-        print(">>> REQUEST USER:", getattr(self.request.user, "email", None), self.request.user.id)
-        print(">>> REQUEST DATA:", self.request.data)
-        agendamento = serializer.save()
-        print(">>> AGENDAMENTO.PACIENTE:", agendamento.triagem_IA.ficha_medica_paciente.paciente.email)
-        paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
-        EmailFactory.email_confirmacao_agendamento(paciente)    
         
-    # def perform_create(self, serializer):
-    #     agendamento = serializer.save()
-    #     paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
-    #     EmailFactory.email_confirmacao_agendamento(paciente)
+        agendamento = serializer.save()
+        paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
+        EmailFactory.email_confirmacao_agendamento(paciente)  
+        
+
             
 
     

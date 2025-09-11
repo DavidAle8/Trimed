@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register(r'triagem-enfermeiro', TriagemEnfermeiroViewSet)
 router.register(r'triagem-IA', TriagemIAViewSet)
 
+
 urlpatterns = router.urls
 
 

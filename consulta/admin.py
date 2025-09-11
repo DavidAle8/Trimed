@@ -3,7 +3,7 @@ from .models import ConsultaMedica, ReceitaMedica, Medicamento, ReceitaItem, Exa
 
 @admin.register(ConsultaMedica)
 class ConsultaMedicaAdmin(admin.ModelAdmin):
-    list_display = ['medico', 'triagem_enfermeiro', 'diagnostico_final']
+    list_display = ['medico', 'triagem_enfermeiro', 'diagnostico']
     search_fields = ['medico__nome_completo', 'triagem_enfermeiro__enfermeiro__nome_completo']
     raw_id_fields = ['triagem_enfermeiro', 'medico']
 

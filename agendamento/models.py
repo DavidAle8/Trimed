@@ -14,6 +14,7 @@ class Agendamento(models.Model):
     class Meta:
         verbose_name = "Agendamento"
         verbose_name_plural = "Agendamentos"
+        ordering = ['data_hora_consulta']
         
     # def __str__(self):
     #     return f"Agendamento de {self.triagem_IA.} - Agendamento #{self.pk}"

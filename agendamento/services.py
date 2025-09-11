@@ -3,8 +3,6 @@ from triagem.models import TriagemIA
 import re, os
 from Trimed import settings
 
-# genai.configure(api_key="AIzaSyBms56-kweNlM6_PUFdcnGK91hHN3dMt8E")
-
 class IAService:
 
     @staticmethod
@@ -30,7 +28,7 @@ class IAService:
             - URGENTE - AMARELO
             - POUCO_URGENTE - VERDE
             - NAO_URGENTE - AZUL
-
+        
         Retorne no formato:
         Diagnóstico: ...
         Prioridade: ...

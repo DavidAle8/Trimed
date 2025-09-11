@@ -7,20 +7,40 @@ from django.db import transaction
 from notificacao.services import EmailFactory
 
 class FichaMedicaPacienteSerializer(serializers.ModelSerializer):
-	
-    class Meta():
+    
+    nome_completo = serializers.CharField(source='paciente.nome_completo', read_only=True)
+
+    class Meta:
         model = FichaMedicaPaciente
-        fields = ['id', 'motivo_consulta', 'medicacao_para_sintoma', 'medicamento_diario', 'alergia_geral', 
-        'alergia_medicamento', 'possui_doencas_cronicas', 'historico_familiar_de_doencas']
+        fields = ['id','nome_completo','motivo_consulta','medicacao_para_sintoma','medicamento_diario',
+        'alergia_geral','alergia_medicamento','possui_doencas_cronicas','historico_familiar_de_doencas']
+        read_only_fields = ['id', 'nome_completo']
+
 
 
 class AgendamentoSerializer(serializers.ModelSerializer):
     
+    paciente_nome = serializers.CharField(source='triagem_IA.ficha_medica_paciente.paciente.nome_completo',read_only=True)
+    medico_nome = serializers.CharField(source='medico.nome_completo',read_only=True)
+    data_consulta = serializers.SerializerMethodField()
+    hora_consulta = serializers.SerializerMethodField()
+
     class Meta:
         model = Agendamento
-        fields = ['data_hora_consulta', 'orientacoes']
-        # read_only_fields = ['triagem_IA']
-     
+        fields = ['id','paciente_nome', 'medico_nome', 'data_consulta', 'hora_consulta','orientacoes','data_hora_consulta']
+        #read_only_fields = ['id','paciente_nome', 'medico_nome', 'data_consulta', 'hora_consulta']
+
+    def get_data_consulta(self, obj):   
+        if obj.data_hora_consulta:
+            return obj.data_hora_consulta.strftime('%d/%m/%Y')
+        return None
+
+    def get_hora_consulta(self, obj):
+        if obj.data_hora_consulta:
+            return obj.data_hora_consulta.strftime('%H:%M')
+        return None
+
+    
     def get_queryset(self):
         user = self.request.user 
         return Agendamento.objects.filter(triagem_IA__ficha_medica_paciente__paciente=user,triagem_IA__status_agendamento='CONFIRMADO').order_by('data_hora_consulta')
@@ -47,6 +67,7 @@ class AgendamentoSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
+        
         triagem = self.context['triagem_IA'] 
         medico = validated_data['medico']
         
@@ -64,3 +85,8 @@ class AgendamentoSerializer(serializers.ModelSerializer):
         EmailFactory.email_confirmacao_agendamento(paciente)
         
         return agendamento
+    
+    
+    
+    
+
