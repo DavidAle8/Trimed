@@ -13,6 +13,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .permissions import IsAdministradorSistema, IsRH
 from usuario.helpers import gerar_token
 from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView
 
 
 
@@ -43,6 +44,8 @@ class LogoutView(APIView):
 
 class MudarSenhaView(GenericAPIView):
     serializer_class = MudarSenhaSerializer
+class MudarSenhaView(GenericAPIView):
+    serializer_class = MudarSenhaSerializer
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
@@ -54,6 +57,10 @@ class MudarSenhaView(GenericAPIView):
         serializer = self.get_serializer(data=request.data) 
         if serializer.is_valid():
             serializer.save()
+            return Response(
+                {"mensagem": "Senha atualizada com sucesso."},
+                status=status.HTTP_200_OK
+            )
             return Response(
                 {"mensagem": "Senha atualizada com sucesso."},
                 status=status.HTTP_200_OK

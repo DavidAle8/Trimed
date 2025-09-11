@@ -18,6 +18,7 @@ class ConsultaMedica(models.Model):
         
     def __str__(self):
         paciente_nome = self.triagem_enfermeiro.agendamento.triagem_IA.ficha_medica_paciente.paciente.nome_completo
+        paciente_nome = self.triagem_enfermeiro.agendamento.triagem_IA.ficha_medica_paciente.paciente
         # data_hora = self.data_hora_triagem.strftime('%d/%m/%Y %H:%M')
         return f"Médico Responsável: {self.medico.nome_completo} - Avaliação Médica de {paciente_nome}"    
     

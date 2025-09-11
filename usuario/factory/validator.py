@@ -107,11 +107,13 @@ class CORENFactory(Validator):
     
 class TokenFactory(Validator):
     
+    
     def validate(self, token: str) -> Token:
         if not token:
             raise serializers.ValidationError({'token': 'O token é obrigatório.'})
 
         token_str = token.strip()
+        token = token.strip()  # remove espaços
         try:
             cadastro_token = Token.objects.get(token__iexact=token_str)
         except Token.DoesNotExist:
@@ -120,6 +122,8 @@ class TokenFactory(Validator):
         # Se no futuro quiser reativar expiração, bastaria aqui:
         # if cadastro_token.expirou():
         #     raise serializers.ValidationError({'token': 'Token expirado, gere outro.'})
+        # if cadastro_token.expirou():
+        #     raise ValueError("Token digitado foi expirado, por favor gere outro token.")
 
         return cadastro_token
 

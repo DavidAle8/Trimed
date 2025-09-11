@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from jsonschema import ValidationError
@@ -42,6 +43,21 @@ class AgendamentoViewSet(ModelViewSet):
     
     def get_queryset(self):
             user = self.request.user
+            
+            if hasattr(user, 'enfermeiro'):
+                hoje = timezone.now().date()
+                return Agendamento.objects.filter(data_hora_consulta__date=hoje).order_by('data_hora_consulta')
+            
+            # Para PACIENTES: mostra apenas seus próprios agendamentos
+            elif hasattr(user, 'paciente'):
+                return Agendamento.objects.filter(triagem_IA__ficha_medica_paciente__paciente=user.paciente).order_by('data_hora_consulta')
+            
+            # Outros usuários (médicos, admin, etc) não veem agendamentos
+            else:
+                return Agendamento.objects.none()
+    
+    def get_queryset(self):
+            user = self.request.user
 
             if hasattr(user, 'enfermeiro'):
                 hoje = timezone.now().date()
@@ -55,10 +71,13 @@ class AgendamentoViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         
+        
         agendamento = serializer.save()
         paciente = agendamento.triagem_IA.ficha_medica_paciente.paciente
         EmailFactory.email_confirmacao_agendamento(paciente)  
+        EmailFactory.email_confirmacao_agendamento(paciente)  
         
+
 
             
 

@@ -9,6 +9,7 @@ class TriagemEnfermeiro(models.Model):
     TEXT_DEFAULT = "Procedimento não realizado"
 
     agendamento = models.ForeignKey(Agendamento, null=False, on_delete=models.CASCADE, verbose_name="Agendamento do Paciente") 
+    agendamento = models.ForeignKey(Agendamento, null=False, on_delete=models.CASCADE, verbose_name="Agendamento do Paciente") 
     enfermeiro = models.ForeignKey(Enfermeiro, on_delete=models.SET_NULL, null=True, verbose_name="Enfermeiro Responsável")
     
     pressao_arterial = models.CharField(max_length=10, blank=True, default=TEXT_DEFAULT, verbose_name="Pressão Arterial (mmHg)")
@@ -19,7 +20,7 @@ class TriagemEnfermeiro(models.Model):
     glicemia_capilar = models.IntegerField(blank=True, null=True, default=0, verbose_name="Glicemia Capilar (mg/dL)") 
     observacoes_medicas = models.TextField(blank=True ,verbose_name="Informe algumas observações médicas se necessário")
     data_criacao_triagem = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = "Triagem do enfermeiro(a)"
         verbose_name_plural = "Triagens do enfermeiros(as)"
@@ -33,7 +34,7 @@ class TriagemEnfermeiro(models.Model):
 class TriagemIA(models.Model):
     
     ficha_medica_paciente = models.OneToOneField(FichaMedicaPaciente, on_delete=models.CASCADE, verbose_name="Agendamento do paciente")
-    
+     
     diagnostico_IA = models.TextField(verbose_name="Diagnóstico da IA")
     PRIORIDADE_IA_CHOICES = [
         ('EMERGENCIA - VERMELHO', 'EMERGÊNCIA (vermelho)'),

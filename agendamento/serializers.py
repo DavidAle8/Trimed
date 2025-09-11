@@ -27,20 +27,9 @@ class AgendamentoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Agendamento
-        fields = ['id','paciente_nome', 'medico_nome', 'data_consulta', 'hora_consulta','orientacoes','data_hora_consulta']
-        #read_only_fields = ['id','paciente_nome', 'medico_nome', 'data_consulta', 'hora_consulta']
-
-    def get_data_consulta(self, obj):   
-        if obj.data_hora_consulta:
-            return obj.data_hora_consulta.strftime('%d/%m/%Y')
-        return None
-
-    def get_hora_consulta(self, obj):
-        if obj.data_hora_consulta:
-            return obj.data_hora_consulta.strftime('%H:%M')
-        return None
-
-    
+        fields = ['data_hora_consulta', 'orientacoes']
+        # read_only_fields = ['triagem_IA']
+     
     def get_queryset(self):
         user = self.request.user 
         return Agendamento.objects.filter(triagem_IA__ficha_medica_paciente__paciente=user,triagem_IA__status_agendamento='CONFIRMADO').order_by('data_hora_consulta')
