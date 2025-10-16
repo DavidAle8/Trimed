@@ -1,0 +1,152 @@
+
+
+
+.topo-agendamentos {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* espaço entre botão e título */
+  margin-bottom: 20px;
+}
+
+.btn-voltar {
+  background-color: #0c4b33; /* cor IFS */
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-voltar:hover {
+  background-color: #0a3d29;
+}
+
+.topo-agendamentos h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #003d2d; /* cor mais institucional */
+  margin: 0;
+}
+
+
+
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+.cta-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Lista de Agendamentos */
+.agendamentos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.agendamento-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.agendamento-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* Informações do agendamento */
+.agendamento-card p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.agendamento-card p strong {
+  color: #333;
+}
+
+/* Status */
+.status-confirmado {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-pendente {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+/* Orientações */
+.orientacoes {
+  margin-top: 10px;
+  font-style: italic;
+  color: #555;
+}
+
+/* Mensagem quando não há agendamentos */
+.no-agendamentos {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 50px;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  color: #666;
+  font-size: 14px;
+}
+

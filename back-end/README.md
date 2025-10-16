@@ -1,0 +1,2 @@
+# Trimed
+A Trimed é um sistema de triagem inteligente para priorização de atendimentos em Unidades Básicas de Saúde. O mesmo possibilita com que o paciente, após ter marcado uma consulta informando os seus sintomas, tenha o seu atendimento priorizado baseado eu seu estado de saúde. Depois que um agendamento é feito, uma IA vai ser responsável por analisar o quadro clínico do paciente e classificar em qual gravidade ele se encaixa, podendo ser atendido mais rápido dependendo da gravidade do seu estado. A classificação é baseado na escala richter.
