@@ -103,6 +103,7 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    
     senha = serializers.CharField(write_only=True, required=False)
     confirmar_senha = serializers.CharField(write_only=True, required=False)
     
@@ -141,6 +142,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class MedicoSerializer(UsuarioSerializer):
+    
     class Meta(UsuarioSerializer.Meta):
         model = Medico
         fields = UsuarioSerializer.Meta.fields + ['crm', 'especialidade']
@@ -160,6 +162,7 @@ class MedicoSerializer(UsuarioSerializer):
 
 
 class PacienteSerializer(UsuarioSerializer):
+    
     class Meta(UsuarioSerializer.Meta):
         model = Paciente
         fields = UsuarioSerializer.Meta.fields + ['cns']

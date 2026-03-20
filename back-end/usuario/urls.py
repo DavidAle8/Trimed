@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     MedicoViewSet, PacienteViewSet, EnfermeiroViewSet, RHViewSet,
     AdministradorSistemaViewSet, MudarSenhaView, LoginView, LogoutView,
-    TokenViewSet  # 👈 ADICIONAR TokenViewSet aqui (se necessário)
+    TokenViewSet 
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -13,12 +13,12 @@ router.register(r'paciente', PacienteViewSet)
 router.register(r'enfermeiro', EnfermeiroViewSet)
 router.register(r'administrador', AdministradorSistemaViewSet)
 router.register(r'rh', RHViewSet) 
-router.register(r'token', TokenViewSet, basename='token')  # 👈 Para gerar tokens
+router.register(r'token', TokenViewSet, basename='token') 
 
 urlpatterns = router.urls
 
 urlpatterns += [
-    path('mudar-senha/', MudarSenhaView.as_view(), name='mudar-senha'),  # ✅ Já existe
+    path('mudar-senha/', MudarSenhaView.as_view(), name='mudar-senha'), 
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
